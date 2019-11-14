@@ -1,6 +1,7 @@
 # blog
 
 ## 创建 gh-pages分支
+
 ```shell
 git checkout -b gh-pages
 git rm -rf .
