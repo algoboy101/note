@@ -19,9 +19,9 @@ sys.path.insert(0, os.path.abspath('.'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'blog'
-copyright = '2019, xuezhi.zhang'
-author = 'xuezhi.zhang'
+project = '张学志の博客'
+copyright = '2019, 张学志'
+author = '张学志'
 
 # The full version, including alpha/beta/rc tags
 release = '1.0'
@@ -49,8 +49,8 @@ source_suffix = {
 # The master toctree document.
 master_doc = 'index'
 
-# language = 'zh_CN'
-language = 'en'
+language = 'zh_CN'
+#language = 'en'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.

@@ -3,25 +3,16 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to blog's documentation!
-================================
-
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
+关于
+====
+Hello, 我是张学志。硕士毕业于中国科学院大学。目前在研究深度学习和计算机视觉方向。。。
 
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
-
-About
-=====
+目录
+====
 
 .. toctree::
    :maxdepth: 10
