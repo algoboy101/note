@@ -1,4 +1,5 @@
 # blog
+[![Build Status](https://www.travis-ci.org/algoboy101/note.svg?branch=master)](https://www.travis-ci.org/algoboy101/note)
 
 ## 创建 gh-pages分支
 
