@@ -16,6 +16,7 @@
 
 **作者站点：**
 
+- `网站源码 <https://github.com/algoboy101/note>`_
 - `CSDN博客（访问量：100万） <https://blog.csdn.net/xuezhisdc>`_
 
 **朋友站点：**
