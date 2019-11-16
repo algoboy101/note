@@ -1,18 +1,10 @@
 language: python - "3.7"
 
 before_install:
-    # - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
-    - wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
-    - chmod +x miniconda.sh
-    - "./miniconda.sh -b"
     - ls
     - pwd
-    - export PATH=/home/travis/miniconda3/bin:$PATH
-    - conda update --yes conda
-    - sudo ln -s /run/shm /dev/shm
 install:
-    - conda install --yes python="3.7" psutil sphinx numpy scipy gdal cython h5py pycurl shapely mock matplotlib
-    - pip install --user travis-sphinx recommonmark sphinx_rtd_theme
+    - pip install --user sphinx travis-sphinx recommonmark sphinx_rtd_theme
 
 script:
     # travis-sphinx build --source=./
