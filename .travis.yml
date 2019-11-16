@@ -3,7 +3,7 @@ language: python - "3.7"
 before_install:
     - whereis python
     - sudo apt-get update
-    - sudo apt-get install python3-pip
+    - sudo apt-get install python3-pip python3-setuptools python3-wheel
     - whereis pip
     - sudo pip3 install pip --upgrade
     - whereis pip
