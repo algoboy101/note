@@ -1,6 +1,7 @@
 language: python - "3.7"
 
 before_install:
+    - whereis python
     - sudo apt-get update
     - sudo apt-get install python3-pip
     - ls
