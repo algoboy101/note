@@ -3,8 +3,11 @@ language: python - "3.7"
 before_install:
     - ls
     - pwd
+    - python --version
+    - python3 --version
+    - pip --version
 install:
-    - pip install --user sphinx travis-sphinx recommonmark sphinx_rtd_theme
+    - pip3 install --user sphinx travis-sphinx recommonmark sphinx_rtd_theme
 
 script:
     # travis-sphinx build --source=./
