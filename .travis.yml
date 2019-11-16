@@ -4,10 +4,14 @@ before_install:
     - whereis python
     - sudo apt-get update
     - sudo apt-get install python3-pip
+    - whereis pip
+    - pip3 install pip --upgrade
+    - whereis pip
     - ls
     - pwd
     - python --version
     - python3 --version
+    - python3.7 --version
     - pip --version
 install:
     - pip3 install --user sphinx travis-sphinx recommonmark sphinx_rtd_theme
