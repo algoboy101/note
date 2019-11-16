@@ -1,25 +1,12 @@
 language: python - "3.7"
 
 before_install:
-    - whereis python
     - sudo apt-get update
     - sudo apt-get install python3-pip python3-setuptools python3-wheel
-    - whereis pip
     - sudo pip3 install pip --upgrade
-    - whereis pip
     - sudo apt-get remove python3-pip
-    - whereis pip
-    - ls
-    - pwd
-    - python --version
-    - python3 --version
-    - ls /opt/pyenv/
-    - ls /opt/pyenv/shims/
-    - pip --version
-    - pip3 --version
 install:
     - pip3 install --user sphinx travis-sphinx recommonmark sphinx_rtd_theme
-
 script:
     # travis-sphinx build --source=./
     travis-sphinx build --source=./source
