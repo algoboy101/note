@@ -31,6 +31,6 @@
    :maxdepth: 1
 
    深度学习/index.rst
+   PCL/index.rst
    Linux/index.rst
    博客运维/index.rst
-   测试/index.rst
