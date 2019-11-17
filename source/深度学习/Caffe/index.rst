@@ -2,7 +2,7 @@ Caffe
 =====
 
 ..  toctree::
-    :maxdepth: 1
+    :maxdepth: 2
 
     caffe安装系列——综述.md
     caffe安装系列——安装GCC4.7和G++4.7并降级.md
