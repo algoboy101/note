@@ -9,3 +9,4 @@
    hexo教程系列——hexo安装教程.md
    hexo教程系列——hexo配置教程.md
    hexo教程系列——使用Travis自动部署hexo.md
+   测试MD基本语法.md
