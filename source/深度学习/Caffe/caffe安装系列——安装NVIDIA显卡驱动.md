@@ -24,15 +24,12 @@
 * [安装caffe](http://zhangxuezhi.com/2015/10/13/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85caffe/)
 
 
+## 0.版本说明
+* cuda6.5 ***NVIDIA-Linux-x86_64-346.xx*** (Ubuntu 14.04)
+* cuda7.0 ***NVIDIA-Linux-x86_64-346.xx*** (Ubuntu 14.04)
+* cuda7.5 ***NVIDIA-Linux-x86_64-352.xx*** (Ubuntu 15.04)
 
-## 安装NVIDIA显卡驱动
-
-### 0.版本说明
-cuda6.5 ***NVIDIA-Linux-x86_64-346.xx*** (Ubuntu 14.04)
-cuda7.0 ***NVIDIA-Linux-x86_64-346.xx*** (Ubuntu 14.04)
-cuda7.5 ***NVIDIA-Linux-x86_64-352.xx*** (Ubuntu 15.04)
-
-### 1.使用apt-get安装
+## 1.使用apt-get安装
 * 安装32位兼容包
 ```
 # 32位兼容包
@@ -56,6 +53,6 @@ sudo apt-get install nvidia-346
 * 注意：务必成功安装显卡驱动之后，再继续其它步骤，否则。。。。
 * 注意：先将GCC和G++降级，然后再安装驱动。
 
-### 2.使用二进制安装包安装
+## 2.使用二进制安装包安装
 * 下载驱动
 * 参考[《Ubuntu-安装-cuda7.0-单显卡-超详细教程》](http://blog.csdn.net/xuezhisdc/article/details/47075401)安装。。。

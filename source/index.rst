@@ -28,7 +28,7 @@
 ====
 
 .. toctree::
-   :maxdepth: 10
+   :maxdepth: 1
 
    深度学习/index.rst
    Linux/index.rst

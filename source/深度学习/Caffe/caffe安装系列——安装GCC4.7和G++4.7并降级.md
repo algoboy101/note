@@ -28,13 +28,13 @@
 ## 安装GCC4.7和G++4.7并降级
 * 注意：需要联网。
 
-### 1.下载并安装gcc/g++ 4.7.x
+* 下载并安装gcc/g++ 4.7.x
 ```
 sudo apt-get install -y gcc-4.7
 sudo apt-get install -y g++-4.7
 ```
 
-### 2.链接gcc/g++实现降级
+* 链接gcc/g++实现降级
 ```
 cd /usr/bin
 sudo rm gcc

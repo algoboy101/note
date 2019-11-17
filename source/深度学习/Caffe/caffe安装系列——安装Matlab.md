@@ -23,13 +23,12 @@
 * [安装Python依赖包](http://zhangxuezhi.com/2015/09/24/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85python%E4%BE%9D%E8%B5%96%E5%8C%85/)
 * [安装caffe](http://zhangxuezhi.com/2015/10/13/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85caffe/)
 
-## 安装Matlab
-
-### 1. 下载Matlab
+## 1. 下载Matlab
 * 下载地址，请自行百度解决。太大了，不方便提供。
 * 版本选择问题。最好下载较新的版本。比如R2014a，R2014b和R2015a等。
 * 下载破解文件Crack文件。一般情况下，crack文件是包含在下载的Matlab安装镜像里面的——除非你下载的是MathWork公司提供的原版。如果里面没有crack文件，自行***Google***解决。
-###2. 安装Matlab
+
+## 2. 安装Matlab
 * Matlab安装过程请参考下面的连接（欧新宇）。里面给出了详细的教程。
 * 说明几点：
 	* Windows下安装Matlab，直接双击安装文件即可。但是，在Ubuntu中安装Matlab时，是***在命令行中安装***的。具体而言，在命令行中，切换到Matlab安装包路径下，执行`sudo ./install`，就会跳出安装会话框。
@@ -46,7 +45,7 @@
 sudo cp libmwservices.so /usr/local/MATLAB/R2014a/bin/glnxa64/
 ```
 
-### 3.GCC和G++版本问题
+## 3.GCC和G++版本问题
 * 前面[ 《caffe安装系列——安装GCC4.7和G++4.7并降级》](http://blog.csdn.net/xuezhisdc/article/details/48650015)介绍了如何实现GCC和G++降级，并提到了为什么这样操作——Ubuntu14.04版本默认的GCC和G++都是4.8。而Matlab默认支持的mex编译器是GCC4.7.x和G++4.7.x。因此需要额外安装GCC4.7和G++4.7并降级。
 *请注意一点： [ 《caffe安装系列——安装GCC4.7和G++4.7并降级》](http://blog.csdn.net/xuezhisdc/article/details/48650015)实现了GCC和G++的降级，但是并没有更改任何的关于Matlab文件。Matalb要使用GCC4.7和G++4.7，还需要做一些工作——重新连接 libstdc++.so.6文件。
 * 具体操作命令如下所示：
@@ -66,7 +65,7 @@ ln –s libstdc++.so.6.0.20 libstdc++.so.6
 sudo ldconfig -v
 ```
 
-### 4. 建立Matlab的快捷方式
+## 4. 建立Matlab的快捷方式
 * 新建一个文本文件（使用vi, gedit等），输入以下内容。退出保存。将该文件放到/home/yourname/Desktop/目录下，既可以看到Matlab的快捷方式。
 ```
 [Desktop Entry]

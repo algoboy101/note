@@ -2,6 +2,6 @@
 ========
 
 .. toctree::
-   :maxdepth: 10
+   :maxdepth: 1
 
    Caffe/index.rst

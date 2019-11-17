@@ -46,8 +46,10 @@ sudo pip install scipy -i http://pypi.douban.com/simple
 # 查看目录/tmp/pip_build_root
 sudo apt-get install -y python-matplotlib python-sklearn python-sklearn-lib 
 ```
+
 * 安装boost和pyCUDA
-```
+
+```bash
 # 安装boost和和pyCUDA。pyCUDA需要boost。
 sudo apt-get install -y libboost-all-dev 
 # 下载pycuda源代码
@@ -59,13 +61,16 @@ make -j
 #安装
 sudo python setup.py install
 ```
+
 * 安装Theano
-```
+
+```bash
 sudo pip install theano -i http://pypi.douban.com/simple
 ```
 
 * 安装pyCaffe需要的依赖
-```
+
+```bash
 # 使用apt-get安装大多数包
 sudo apt-get install -y python-numpy python-scipy python-matplotlib python-sklearn python-skimage python-h5py python-protobuf python-leveldb python-networkx python-nose python-pandas python-gflags cython ipython python-yaml 
 sudo apt-get install -y protobuf-c-compiler protobuf-compile

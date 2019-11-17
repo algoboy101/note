@@ -30,7 +30,8 @@
 * 这个脚本是我根据GitHub上大神写的[安装OpenCV的脚本](https://github.com/jayrambhia/Install-OpenCV)改造的，这个脚本有一些问题，有些包安装不上，比如mmfpeg，有些包前后安装相互冲突，后面的会把前面的卸载等等。
 * 使用这个脚本的方法就是，先给5个脚本执行权限`chmod +x *.sh`，然后依照顺序执行这些脚本。
 * 执行1dependeccies.sh的方法是`sudo sh 1dependencies.sh`。这个脚本主要是安装OpenCV的一些依赖库。
-```
+
+```bash
 #!/bin/bash
 #edited by xuezhi zhang.
 echo "--- Removing any pre-installed ffmpeg and x264"
@@ -91,9 +92,11 @@ echo "===================================================="
 #install_dependency ffmpeg
 #install fail, run file of ffmpeg_install to install it
 ```
+
 * 执行2download.sh的方法是`sudo sh 2download.sh`。这个脚本主要是下载一个安装包，为后面编译安装做准备。
 * 执行2download.sh前，修改一下脚本，选择opencv-2.4.11和opencv-3.0.0，注释（#）另外一个就OK。
-```
+
+```bash
 echo "===================================================="
 echo "--- Dowloading v4l-utils"
 echo "===================================================="
@@ -113,9 +116,11 @@ wget -O opencv-2.4.11.zip http://sourceforge.net/projects/opencvlibrary/files/op
 #wget -O opencv-3.0.0.zip http://sourceforge.net/projects/opencvlibrary/files/opencv-unix/3.0.0/opencv-3.0.0.zip/download
 
 ```
+
 * 执行3mmfpeg_install.sh的方法是`sudo sh 3mmfpeg_install.sh`。这个脚本主要是安装mmfpeg。为后面安装OpenCV做准备。
 * 因为mmfpeg不能使用apt-get安装，因此需要自己编译安装。
-```
+
+```bash
 echo "===================================================="
 echo "Installing dependency"
 echo "===================================================="
@@ -139,8 +144,10 @@ echo "===================================================="
 make install
 cd ..
 ```
+
 * 执行4v4l_install.sh，安装v4l。
-```
+
+```bash
 echo "===================================================="
 echo "---Installing v4l---"
 echo "===================================================="
@@ -151,10 +158,12 @@ make -j
 sudo make install
 cd ..
 ```
+
 * 安装OpenCV有两个选择，OpenCV2.4.11和OpenCV3.0.0，分别对应于5opencv2411.sh和5opencv300.sh，根据自己的需要选择执行哪个脚本。【注意：和前面2download.sh中下载的版本保持一致】
 * 注意根据自己的显卡，修改 CUDA_GENERATION。如果是Fermi架构，就需要将Kepler修改成Fermi
 * 安装opencv2.4.11之前，根据最下面的错误分析中的错误1，修改opencvpath/cmake/OpenCVDetectCUDA.cmake文件之后，再执行脚本，否则可能出错。
-```
+
+```bash
 # added by xuezhi zhang.
 # 
 # OpenCV 2.4.11
