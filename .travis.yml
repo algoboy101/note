@@ -13,7 +13,8 @@ install:
     - pip3 install --user sphinx travis-sphinx recommonmark sphinx_rtd_theme
 script:
     # travis-sphinx build --source=./
-    travis-sphinx build --source=./source
+    #travis-sphinx build --source=./source
+    travis-sphinx build --source=./source --nowarn
 
 after_success:
     # travis-sphinx deploy
