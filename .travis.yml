@@ -13,4 +13,5 @@ script:
 
 after_success:
     # travis-sphinx deploy
-    travis-sphinx deploy --cname www.xuezhisd.top
+    # travis-sphinx deploy --cname www.xuezhisd.top
+    travis-sphinx deploy --cname blog.xuezhisd.top
