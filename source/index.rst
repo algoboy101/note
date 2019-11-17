@@ -28,7 +28,8 @@
 ====
 
 .. toctree::
-   :maxdepth: 5
+   :maxdepth: 2
    
+   Linux/index.rst
    博客运维/index.rst
    测试/index.rst
