@@ -2,6 +2,6 @@
 ====
 
 .. toctree::
-   :maxdepth: 5
+   :maxdepth: 1
 
    测试MD基本语法.md
