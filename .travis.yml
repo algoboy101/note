@@ -20,4 +20,4 @@ after_success:
     # travis-sphinx deploy
     # travis-sphinx deploy --cname www.xuezhisd.top
     #travis-sphinx deploy --cname blog.xuezhisd.top
-    travis-sphinx deploy -b master -c "blog.xuezhisd.top" -m "update blog automatically by travis."
+    travis-sphinx deploy -b master -c "note.xuezhisd.top" -m "update blog automatically by travis."
