@@ -12,7 +12,7 @@ before_install:
 #     - sudo apt-get install texlive-full
 install:
 #     - pip3 install --user sphinx travis-sphinx recommonmark sphinx_rtd_theme
-    - pip3 install --user sphinx travis-sphinx recommonmark sphinx_rtd_theme
+    - pip3 install sphinx travis-sphinx recommonmark sphinx_rtd_theme
     - sudo apt-get install texlive-full
 script:
     # travis-sphinx build --source=./
