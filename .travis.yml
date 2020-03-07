@@ -9,11 +9,16 @@ before_install:
     - sudo apt-get install python3-pip python3-setuptools python3-wheel
     - sudo pip3 install pip --upgrade
     - sudo apt-get remove python3-pip
+    - sudo apt-get install texlive-full
 install:
     - pip3 install --user sphinx travis-sphinx recommonmark sphinx_rtd_theme
 script:
     # travis-sphinx build --source=./
     #travis-sphinx build --source=./source
+    ls
+    make latexpdf
+    pwd
+    ls
     travis-sphinx build --source=./source --nowarn
 
 after_success:
