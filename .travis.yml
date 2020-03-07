@@ -22,6 +22,9 @@ script:
     - pwd
     - ls
     - travis-sphinx build --source=./source --nowarn
+    - ls
+    - ls build/
+    - ls build/latex
 
 after_success:
     # travis-sphinx deploy
