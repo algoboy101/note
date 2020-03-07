@@ -25,6 +25,10 @@ script:
     - ls
     - ls build/
     - ls build/latex
+    - ls doc
+    - ls doc/build
+    - cp build/latex/sphinx.pdf doc/build/
+    - cp build/latex/sphinx.pdf doc/build/html/
 
 after_success:
     # travis-sphinx deploy
