@@ -1,0 +1,36 @@
+# 域名重定向的变通实现方法
+
+## 问题
+* 在Github上搭建了一个博客：[https://www.xuezhisd.top/](https://www.xuezhisd.top/)，希望`多个域名访问这个博客`（历史遗留问题）！
+    * 比如，xuezhisd.top, blog.xuezhisd.top, note.xuezhisd.top。即
+    * [https://note.xuezhisd.top/](https://note.xuezhisd.top/) 自动跳转到：https://www.xuezhisd.top/
+    * [https://blog.xuezhisd.top/](https://blog.xuezhisd.top/) 自动跳转到：https://www.xuezhisd.top/
+
+## 失败方法
+* 方案一：CNAME。GitHub的Page服务不能够通过设置CNAME设置多个域名。
+* 方案二：重定向。阿里云的域名管理，可以设置重定向，但需要备案！域名`xuezhisd.top`没有备案，不能使用这个功能。
+* 方案一和方案二都失败了。
+
+## 成功方法
+* 建立另外一个repo：https://github.com/algoboy101/note_redirect_note，并创建gh-pages分支；
+* 设置该repo的CNAME为：note.xuezhisd.top
+* 创建一个`index.html`文件，写入以下内容，使用JavaScript实现跳转到https://www.xuezhisd.top/的功能：
+```html
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript">
+				window.location.href="https://www.xuezhisd.top/";  //1
+				window.history.back(-1); //2  页面返回
+				self.location='https://www.xuezhisd.top/'; //3 
+				top.location='https://www.xuezhisd.top/';  //4
+		</script>
+	</head>
+</html>
+```
+* 提交到`gh-pages`分支。
+* 尝试访问：https://note.xuezhisd.top/。链接自动跳转到：https://www.xuezhisd.top/。
+
+## 原理解释
+* 新创建的repo提供了额外的CNAME，可以用来新绑定一个域名。
+* 该repo中的`index.html`实现你了跳转功能：访问到该文件，立马跳转到指定链接。
