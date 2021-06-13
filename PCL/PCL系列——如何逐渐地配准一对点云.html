@@ -1,0 +1,1421 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>PCL系列——如何逐渐地配准一对点云 &mdash; 张学志の博客 1.0 文档</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/translations.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="PCL系列——将点云数据写入PCD格式文件" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6.html" />
+    <link rel="prev" title="PCL系列——如何可视化深度图像" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> 张学志の博客
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/index.html">深度学习</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/index.html">Caffe</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E7%BB%BC%E8%BF%B0.html">caffe安装系列——综述</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E7%BB%BC%E8%BF%B0.html#id1">说明</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E7%BB%BC%E8%BF%B0.html#id2">环境</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E7%BB%BC%E8%BF%B0.html#id3">安装步骤</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E7%BB%BC%E8%BF%B0.html#id4">0.准备工作</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E7%BB%BC%E8%BF%B0.html#gcc4-7g-4-7">1.安装GCC4.7和G++4.7并降级</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E7%BB%BC%E8%BF%B0.html#nvidia">2.安装NVIDIA显卡驱动</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E7%BB%BC%E8%BF%B0.html#cudacudnn">3.安装cuda和cudnn</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E7%BB%BC%E8%BF%B0.html#id5">安装步骤</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E7%BB%BC%E8%BF%B0.html#python">6.安装Python相关依赖</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E7%BB%BC%E8%BF%B0.html#id6">7.安装caffe</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E7%BB%BC%E8%BF%B0.html#id7">总结</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E7%BB%BC%E8%BF%B0.html#id8">参考</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85GCC4.7%E5%92%8CG%2B%2B4.7%E5%B9%B6%E9%99%8D%E7%BA%A7.html">caffe安装系列——安装GCC4.7和G++4.7并降级</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85GCC4.7%E5%92%8CG%2B%2B4.7%E5%B9%B6%E9%99%8D%E7%BA%A7.html#id1">说明</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85GCC4.7%E5%92%8CG%2B%2B4.7%E5%B9%B6%E9%99%8D%E7%BA%A7.html#id2">环境</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85GCC4.7%E5%92%8CG%2B%2B4.7%E5%B9%B6%E9%99%8D%E7%BA%A7.html#id3">安装步骤</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85GCC4.7%E5%92%8CG%2B%2B4.7%E5%B9%B6%E9%99%8D%E7%BA%A7.html#gcc4-7g-4-7">安装GCC4.7和G++4.7并降级</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85NVIDIA%E6%98%BE%E5%8D%A1%E9%A9%B1%E5%8A%A8.html">caffe安装系列——安装NVIDIA显卡驱动</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85NVIDIA%E6%98%BE%E5%8D%A1%E9%A9%B1%E5%8A%A8.html#id1">说明</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85NVIDIA%E6%98%BE%E5%8D%A1%E9%A9%B1%E5%8A%A8.html#id2">环境</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85NVIDIA%E6%98%BE%E5%8D%A1%E9%A9%B1%E5%8A%A8.html#id3">安装步骤</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85NVIDIA%E6%98%BE%E5%8D%A1%E9%A9%B1%E5%8A%A8.html#id4">0.版本说明</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85NVIDIA%E6%98%BE%E5%8D%A1%E9%A9%B1%E5%8A%A8.html#apt-get">1.使用apt-get安装</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85NVIDIA%E6%98%BE%E5%8D%A1%E9%A9%B1%E5%8A%A8.html#id5">2.使用二进制安装包安装</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85cuda%E5%92%8Ccudnn.html">caffe安装系列——安装cuda和cudnn</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85cuda%E5%92%8Ccudnn.html#id1">说明</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85cuda%E5%92%8Ccudnn.html#id2">环境</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85cuda%E5%92%8Ccudnn.html#id3">安装步骤</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85cuda%E5%92%8Ccudnn.html#cuda">安装cuda</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85cuda%E5%92%8Ccudnn.html#cuda-samples">安装CUDA SAMPLES</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85cuda%E5%92%8Ccudnn.html#cudnn">安装cudnn</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85Matlab.html">caffe安装系列——安装Matlab</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85Matlab.html#id1">说明</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85Matlab.html#id2">环境</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85Matlab.html#id3">安装步骤</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85Matlab.html#matlab">1. 下载Matlab</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85Matlab.html#id4">2. 安装Matlab</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85Matlab.html#gccg">3.GCC和G++版本问题</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85Matlab.html#id5">4. 建立Matlab的快捷方式</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85Matlab.html#id6">检查</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85Matlab.html#id7">参考链接</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85OpenCV.html">caffe安装系列——安装OpenCV</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85OpenCV.html#id1">说明</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85OpenCV.html#id2">环境</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85OpenCV.html#id3">安装步骤</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85OpenCV.html#opencv">安装OpenCV</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85OpenCV.html#id4">判定OpenCV是否安装成功</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85OpenCV.html#id5">OpenCV安装过程中的错误</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85OpenCV.html#id6">参考</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85python%E4%BE%9D%E8%B5%96%E5%8C%85.html">caffe安装系列——安装python依赖包</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85python%E4%BE%9D%E8%B5%96%E5%8C%85.html#id1">说明</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85python%E4%BE%9D%E8%B5%96%E5%8C%85.html#id2">环境</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85python%E4%BE%9D%E8%B5%96%E5%8C%85.html#id3">安装步骤</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85python%E4%BE%9D%E8%B5%96%E5%8C%85.html#theano">安装theano依赖包</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85caffe.html">caffe安装系列——安装caffe</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85caffe.html#id1">说明</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85caffe.html#id2">环境</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85caffe.html#id3">安装步骤</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85caffe.html#google-logging-library-glog">安装Google Logging Library（glog）</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85caffe.html#id4">安装其它依赖</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85caffe.html#makefile-config">编辑Makefile.config文件</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85caffe.html#makefile">编辑Makefile文件</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85caffe.html#caffe-master">编译caffe-master</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85caffe.html#python">设置Python环境变量</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85caffe.html#mnist">使用MNIST数据集进行测试</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85caffe.html#id5">总结</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">PCL</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E6%B3%8A%E6%9D%BE%E9%87%8D%E6%9E%84.html">PCL系列——三维重构之泊松重构</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E6%B3%8A%E6%9D%BE%E9%87%8D%E6%9E%84.html#id1">PCL系列</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E8%AF%BB%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——读入PCD格式文件操作</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——将点云数据写入PCD格式文件</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91/">PCL系列——拼接两个点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%EF%BC%88RangeImage%EF%BC%89%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9/">PCL系列——从深度图像（RangeImage）中提取NARF关键点</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F/">PCL系列——如何可视化深度图像</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/31/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86/">PCL系列——如何使用迭代最近点法（ICP）配准</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E9%80%90%E6%B8%90%E5%9C%B0%E9%85%8D%E5%87%86%E4%B8%80%E5%AF%B9%E7%82%B9%E4%BA%91/">PCL系列——如何逐渐地配准一对点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E6%B3%8A%E6%9D%BE%E9%87%8D%E6%9E%84/">PCL系列——三维重构之泊松重构</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E8%B4%AA%E5%A9%AA%E4%B8%89%E8%A7%92%E6%8A%95%E5%BD%B1%E7%AE%97%E6%B3%95/">PCL系列——三维重构之贪婪三角投影算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%8B%E6%96%B9%E4%BD%93%E7%AE%97%E6%B3%95/">PCL系列——三维重构之移动立方体算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2/">PCL系列——平面模型分割</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E6%B3%8A%E6%9D%BE%E9%87%8D%E6%9E%84.html#id2">说明</a></li>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E6%B3%8A%E6%9D%BE%E9%87%8D%E6%9E%84.html#id3">操作</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%8B%E6%96%B9%E4%BD%93%E7%AE%97%E6%B3%95.html">PCL系列——三维重构之移动立方体算法</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%8B%E6%96%B9%E4%BD%93%E7%AE%97%E6%B3%95.html#id1">PCL系列</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E8%AF%BB%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——读入PCD格式文件操作</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——将点云数据写入PCD格式文件</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91/">PCL系列——拼接两个点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%EF%BC%88RangeImage%EF%BC%89%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9/">PCL系列——从深度图像（RangeImage）中提取NARF关键点</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F/">PCL系列——如何可视化深度图像</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/31/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86/">PCL系列——如何使用迭代最近点法（ICP）配准</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E9%80%90%E6%B8%90%E5%9C%B0%E9%85%8D%E5%87%86%E4%B8%80%E5%AF%B9%E7%82%B9%E4%BA%91/">PCL系列——如何逐渐地配准一对点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E6%B3%8A%E6%9D%BE%E9%87%8D%E6%9E%84/">PCL系列——三维重构之泊松重构</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E8%B4%AA%E5%A9%AA%E4%B8%89%E8%A7%92%E6%8A%95%E5%BD%B1%E7%AE%97%E6%B3%95/">PCL系列——三维重构之贪婪三角投影算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%8B%E6%96%B9%E4%BD%93%E7%AE%97%E6%B3%95/">PCL系列——三维重构之移动立方体算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2/">PCL系列——平面模型分割</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%8B%E6%96%B9%E4%BD%93%E7%AE%97%E6%B3%95.html#id2">说明</a></li>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%8B%E6%96%B9%E4%BD%93%E7%AE%97%E6%B3%95.html#id3">操作</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E8%B4%AA%E5%A9%AA%E4%B8%89%E8%A7%92%E6%8A%95%E5%BD%B1%E7%AE%97%E6%B3%95.html">PCL系列——三维重构之贪婪三角投影算法</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E8%B4%AA%E5%A9%AA%E4%B8%89%E8%A7%92%E6%8A%95%E5%BD%B1%E7%AE%97%E6%B3%95.html#id1">PCL系列</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E8%AF%BB%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——读入PCD格式文件操作</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——将点云数据写入PCD格式文件</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91/">PCL系列——拼接两个点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%EF%BC%88RangeImage%EF%BC%89%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9/">PCL系列——从深度图像（RangeImage）中提取NARF关键点</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F/">PCL系列——如何可视化深度图像</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/31/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86/">PCL系列——如何使用迭代最近点法（ICP）配准</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E9%80%90%E6%B8%90%E5%9C%B0%E9%85%8D%E5%87%86%E4%B8%80%E5%AF%B9%E7%82%B9%E4%BA%91/">PCL系列——如何逐渐地配准一对点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E6%B3%8A%E6%9D%BE%E9%87%8D%E6%9E%84/">PCL系列——三维重构之泊松重构</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E8%B4%AA%E5%A9%AA%E4%B8%89%E8%A7%92%E6%8A%95%E5%BD%B1%E7%AE%97%E6%B3%95/">PCL系列——三维重构之贪婪三角投影算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%8B%E6%96%B9%E4%BD%93%E7%AE%97%E6%B3%95/">PCL系列——三维重构之移动立方体算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2/">PCL系列——平面模型分割</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E8%B4%AA%E5%A9%AA%E4%B8%89%E8%A7%92%E6%8A%95%E5%BD%B1%E7%AE%97%E6%B3%95.html#id2">说明</a></li>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E8%B4%AA%E5%A9%AA%E4%B8%89%E8%A7%92%E6%8A%95%E5%BD%B1%E7%AE%97%E6%B3%95.html#id3">操作</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%28RangeImage%29%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9.html">PCL系列——从深度图像(RangeImage)中提取NARF关键点</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%28RangeImage%29%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9.html#pcl">PCL系列</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://blog.csdn.net/xuezhisdc/article/details/51012300">PCL系列——读入PCD格式文件操作</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://blog.csdn.net/xuezhisdc/article/details/51012463">PCL系列——将点云数据写入PCD格式文件</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://blog.csdn.net/xuezhisdc/article/details/51014388">PCL系列——拼接两个点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://blog.csdn.net/xuezhisdc/article/details/51018872">PCL系列——从深度图像(RangeImage)中提取NARF关键点</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://blog.csdn.net/xuezhisdc/article/details/51019461">PCL系列——如何可视化深度图像</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://blog.csdn.net/xuezhisdc/article/details/51023251">PCL系列——如何使用迭代最近点法（ICP）配准</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://blog.csdn.net/xuezhisdc/article/details/51030943">PCL系列——如何逐渐地配准一对点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://blog.csdn.net/xuezhisdc/article/details/51034189">PCL系列——三维重构之泊松重构</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://blog.csdn.net/xuezhisdc/article/details/51034272">PCL系列——三维重构之贪婪三角投影算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://blog.csdn.net/xuezhisdc/article/details/51034359">PCL系列——三维重构之移动立方体算法</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%28RangeImage%29%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9.html#id1">说明</a></li>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%28RangeImage%29%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9.html#id2">操作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%28RangeImage%29%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9.html#id3">参考</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://pointclouds.org/documentation/tutorials/narf_keypoint_extraction.php#narf-keypoint-extraction">How to extract NARF keypoint from a range image</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86.html">PCL系列——如何使用迭代最近点法（ICP）配准</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86.html#pcl">PCL系列</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E8%AF%BB%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——读入PCD格式文件操作</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——将点云数据写入PCD格式文件</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91/">PCL系列——拼接两个点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%EF%BC%88RangeImage%EF%BC%89%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9/">PCL系列——从深度图像（RangeImage）中提取NARF关键点</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F/">PCL系列——如何可视化深度图像</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/31/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86/">PCL系列——如何使用迭代最近点法（ICP）配准</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E9%80%90%E6%B8%90%E5%9C%B0%E9%85%8D%E5%87%86%E4%B8%80%E5%AF%B9%E7%82%B9%E4%BA%91/">PCL系列——如何逐渐地配准一对点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E6%B3%8A%E6%9D%BE%E9%87%8D%E6%9E%84/">PCL系列——三维重构之泊松重构</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E8%B4%AA%E5%A9%AA%E4%B8%89%E8%A7%92%E6%8A%95%E5%BD%B1%E7%AE%97%E6%B3%95/">PCL系列——三维重构之贪婪三角投影算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%8B%E6%96%B9%E4%BD%93%E7%AE%97%E6%B3%95/">PCL系列——三维重构之移动立方体算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2/">PCL系列——平面模型分割</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86.html#id1">说明</a></li>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86.html#id2">操作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86.html#id3">参考</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://pointclouds.org/documentation/tutorials/iterative_closest_point.php#iterative-closest-point">How to use iterative closest point</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F.html">PCL系列——如何可视化深度图像</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F.html#id1">PCL系列</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E8%AF%BB%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——读入PCD格式文件操作</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——将点云数据写入PCD格式文件</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91/">PCL系列——拼接两个点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%EF%BC%88RangeImage%EF%BC%89%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9/">PCL系列——从深度图像（RangeImage）中提取NARF关键点</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F/">PCL系列——如何可视化深度图像</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/31/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86/">PCL系列——如何使用迭代最近点法（ICP）配准</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E9%80%90%E6%B8%90%E5%9C%B0%E9%85%8D%E5%87%86%E4%B8%80%E5%AF%B9%E7%82%B9%E4%BA%91/">PCL系列——如何逐渐地配准一对点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E6%B3%8A%E6%9D%BE%E9%87%8D%E6%9E%84/">PCL系列——三维重构之泊松重构</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E8%B4%AA%E5%A9%AA%E4%B8%89%E8%A7%92%E6%8A%95%E5%BD%B1%E7%AE%97%E6%B3%95/">PCL系列——三维重构之贪婪三角投影算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%8B%E6%96%B9%E4%BD%93%E7%AE%97%E6%B3%95/">PCL系列——三维重构之移动立方体算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2/">PCL系列——平面模型分割</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F.html#id2">说明</a></li>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F.html#id3">操作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F.html#id4">参考</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://pointclouds.org/documentation/tutorials/range_image_visualization.php#range-image-visualization">How to visualize a range image</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">PCL系列——如何逐渐地配准一对点云</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">PCL系列</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E8%AF%BB%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——读入PCD格式文件操作</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——将点云数据写入PCD格式文件</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91/">PCL系列——拼接两个点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%EF%BC%88RangeImage%EF%BC%89%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9/">PCL系列——从深度图像（RangeImage）中提取NARF关键点</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F/">PCL系列——如何可视化深度图像</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/31/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86/">PCL系列——如何使用迭代最近点法（ICP）配准</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E9%80%90%E6%B8%90%E5%9C%B0%E9%85%8D%E5%87%86%E4%B8%80%E5%AF%B9%E7%82%B9%E4%BA%91/">PCL系列——如何逐渐地配准一对点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E6%B3%8A%E6%9D%BE%E9%87%8D%E6%9E%84/">PCL系列——三维重构之泊松重构</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E8%B4%AA%E5%A9%AA%E4%B8%89%E8%A7%92%E6%8A%95%E5%BD%B1%E7%AE%97%E6%B3%95/">PCL系列——三维重构之贪婪三角投影算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%8B%E6%96%B9%E4%BD%93%E7%AE%97%E6%B3%95/">PCL系列——三维重构之移动立方体算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2/">PCL系列——平面模型分割</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">说明</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">操作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">参考</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://pointclouds.org/documentation/tutorials/pairwise_incremental_registration.php#pairwise-incremental-registration">How to incrementally register pairs of clouds</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6.html">PCL系列——将点云数据写入PCD格式文件</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6.html#pcl">PCL系列</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E8%AF%BB%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——读入PCD格式文件操作</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——将点云数据写入PCD格式文件</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91/">PCL系列——拼接两个点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%EF%BC%88RangeImage%EF%BC%89%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9/">PCL系列——从深度图像（RangeImage）中提取NARF关键点</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F/">PCL系列——如何可视化深度图像</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/31/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86/">PCL系列——如何使用迭代最近点法（ICP）配准</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E9%80%90%E6%B8%90%E5%9C%B0%E9%85%8D%E5%87%86%E4%B8%80%E5%AF%B9%E7%82%B9%E4%BA%91/">PCL系列——如何逐渐地配准一对点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E6%B3%8A%E6%9D%BE%E9%87%8D%E6%9E%84/">PCL系列——三维重构之泊松重构</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E8%B4%AA%E5%A9%AA%E4%B8%89%E8%A7%92%E6%8A%95%E5%BD%B1%E7%AE%97%E6%B3%95/">PCL系列——三维重构之贪婪三角投影算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%8B%E6%96%B9%E4%BD%93%E7%AE%97%E6%B3%95/">PCL系列——三维重构之移动立方体算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2/">PCL系列——平面模型分割</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6.html#id1">操作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6.html#id2">参考</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://pointclouds.org/documentation/tutorials/writing_pcd.php#writing-pcd">Writing Point Cloud data to PCD files</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2.html">PCL系列——平面模型分割</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2.html#id1">PCL系列</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E8%AF%BB%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——读入PCD格式文件操作</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——将点云数据写入PCD格式文件</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91/">PCL系列——拼接两个点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%EF%BC%88RangeImage%EF%BC%89%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9/">PCL系列——从深度图像（RangeImage）中提取NARF关键点</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F/">PCL系列——如何可视化深度图像</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/31/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86/">PCL系列——如何使用迭代最近点法（ICP）配准</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E9%80%90%E6%B8%90%E5%9C%B0%E9%85%8D%E5%87%86%E4%B8%80%E5%AF%B9%E7%82%B9%E4%BA%91/">PCL系列——如何逐渐地配准一对点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E6%B3%8A%E6%9D%BE%E9%87%8D%E6%9E%84/">PCL系列——三维重构之泊松重构</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E8%B4%AA%E5%A9%AA%E4%B8%89%E8%A7%92%E6%8A%95%E5%BD%B1%E7%AE%97%E6%B3%95/">PCL系列——三维重构之贪婪三角投影算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%8B%E6%96%B9%E4%BD%93%E7%AE%97%E6%B3%95/">PCL系列——三维重构之移动立方体算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2/">PCL系列——平面模型分割</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2.html#id2">说明</a></li>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2.html#id3">代码</a></li>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2.html#id4">运行结果</a></li>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2.html#id5">参考</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91.html">PCL系列——拼接两个点云</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91.html#id1">PCL系列</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E8%AF%BB%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——读入PCD格式文件操作</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——将点云数据写入PCD格式文件</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91/">PCL系列——拼接两个点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%EF%BC%88RangeImage%EF%BC%89%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9/">PCL系列——从深度图像（RangeImage）中提取NARF关键点</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F/">PCL系列——如何可视化深度图像</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/31/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86/">PCL系列——如何使用迭代最近点法（ICP）配准</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E9%80%90%E6%B8%90%E5%9C%B0%E9%85%8D%E5%87%86%E4%B8%80%E5%AF%B9%E7%82%B9%E4%BA%91/">PCL系列——如何逐渐地配准一对点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E6%B3%8A%E6%9D%BE%E9%87%8D%E6%9E%84/">PCL系列——三维重构之泊松重构</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E8%B4%AA%E5%A9%AA%E4%B8%89%E8%A7%92%E6%8A%95%E5%BD%B1%E7%AE%97%E6%B3%95/">PCL系列——三维重构之贪婪三角投影算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%8B%E6%96%B9%E4%BD%93%E7%AE%97%E6%B3%95/">PCL系列——三维重构之移动立方体算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2/">PCL系列——平面模型分割</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91.html#id2">说明</a></li>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91.html#id3">操作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91.html#id4">参考</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://pointclouds.org/documentation/tutorials/concatenate_clouds.php#concatenate-clouds">Concatenate the points of two Point Clouds</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E8%AF%BB%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6.html">PCL系列——读入PCD格式文件</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E8%AF%BB%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6.html#pcl">PCL系列</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E8%AF%BB%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——读入PCD格式文件操作</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——将点云数据写入PCD格式文件</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91/">PCL系列——拼接两个点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%EF%BC%88RangeImage%EF%BC%89%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9/">PCL系列——从深度图像（RangeImage）中提取NARF关键点</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F/">PCL系列——如何可视化深度图像</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/31/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86/">PCL系列——如何使用迭代最近点法（ICP）配准</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E9%80%90%E6%B8%90%E5%9C%B0%E9%85%8D%E5%87%86%E4%B8%80%E5%AF%B9%E7%82%B9%E4%BA%91/">PCL系列——如何逐渐地配准一对点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E6%B3%8A%E6%9D%BE%E9%87%8D%E6%9E%84/">PCL系列——三维重构之泊松重构</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E8%B4%AA%E5%A9%AA%E4%B8%89%E8%A7%92%E6%8A%95%E5%BD%B1%E7%AE%97%E6%B3%95/">PCL系列——三维重构之贪婪三角投影算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%8B%E6%96%B9%E4%BD%93%E7%AE%97%E6%B3%95/">PCL系列——三维重构之移动立方体算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2/">PCL系列——平面模型分割</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E8%AF%BB%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6.html#id1">操作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E8%AF%BB%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6.html#id2">参考</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://pointclouds.org/documentation/tutorials/reading_pcd.php#reading-pcd">Reading Point Cloud data from PCD files</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../Linux/index.html">Linux</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%E4%B9%8Bngrok.html">内网穿透之ngrok</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%E4%B9%8Bngrok.html#id1">问题</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%E4%B9%8Bngrok.html#id2">解决方法</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%E4%B9%8Bngrok.html#id3">第一步，注册账号，开通隧道</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%E4%B9%8Bngrok.html#id4">第二步，下载客户端</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%E4%B9%8Bngrok.html#id5">第三步，安装客户端</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%E4%B9%8Bngrok.html#id6">第四步，启动客户端</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%E4%B9%8Bngrok.html#id7">第五步，测试</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%E4%B9%8Bngrok.html#id8">参考</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/%E5%8F%8C%E7%B3%BB%E7%BB%9F%28Linux%29%E6%97%B6%E9%97%B4%E4%B8%8D%E4%B8%80%E8%87%B4%E9%97%AE%E9%A2%98.html">双系统(Linux)时间不一致问题</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/%E5%8F%8C%E7%B3%BB%E7%BB%9F%28Linux%29%E6%97%B6%E9%97%B4%E4%B8%8D%E4%B8%80%E8%87%B4%E9%97%AE%E9%A2%98.html#id1">解决双系统时间不一致问题</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/%E5%8F%8C%E7%B3%BB%E7%BB%9F%28Linux%29%E6%97%B6%E9%97%B4%E4%B8%8D%E4%B8%80%E8%87%B4%E9%97%AE%E9%A2%98.html#id2">问题描述</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/%E5%8F%8C%E7%B3%BB%E7%BB%9F%28Linux%29%E6%97%B6%E9%97%B4%E4%B8%8D%E4%B8%80%E8%87%B4%E9%97%AE%E9%A2%98.html#id3">问题分析</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/%E5%8F%8C%E7%B3%BB%E7%BB%9F%28Linux%29%E6%97%B6%E9%97%B4%E4%B8%8D%E4%B8%80%E8%87%B4%E9%97%AE%E9%A2%98.html#id4">问题解决</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/%E5%8F%8C%E7%B3%BB%E7%BB%9F%28Linux%29%E6%97%B6%E9%97%B4%E4%B8%8D%E4%B8%80%E8%87%B4%E9%97%AE%E9%A2%98.html#centos">CentOS时间同步问题</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/%E5%8F%8C%E7%B3%BB%E7%BB%9F%28Linux%29%E6%97%B6%E9%97%B4%E4%B8%8D%E4%B8%80%E8%87%B4%E9%97%AE%E9%A2%98.html#id5">编辑时间配置文件</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/%E5%8F%8C%E7%B3%BB%E7%BB%9F%28Linux%29%E6%97%B6%E9%97%B4%E4%B8%8D%E4%B8%80%E8%87%B4%E9%97%AE%E9%A2%98.html#id6">设置为上海时区</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/%E5%8F%8C%E7%B3%BB%E7%BB%9F%28Linux%29%E6%97%B6%E9%97%B4%E4%B8%8D%E4%B8%80%E8%87%B4%E9%97%AE%E9%A2%98.html#id7">对准时间</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/%E5%8F%8C%E7%B3%BB%E7%BB%9F%28Linux%29%E6%97%B6%E9%97%B4%E4%B8%8D%E4%B8%80%E8%87%B4%E9%97%AE%E9%A2%98.html#id8">设置硬件时间和系统时间一致并校准</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/%E5%8F%8C%E7%B3%BB%E7%BB%9F%28Linux%29%E6%97%B6%E9%97%B4%E4%B8%8D%E4%B8%80%E8%87%B4%E9%97%AE%E9%A2%98.html#id9">参考</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html">Linux学习笔记</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html#id1">终端</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html#id2">终端和控制台</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html#id3">终端的本质</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html#id4">终端模拟器</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html#virtual-consoles">终端的6个Virtual consoles</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html#shell">Shell</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html#id5">历史命令</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html#id6">获取帮助</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html#id7">一些命令</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html#id8">Linux用户管理</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html#id9">查看用户</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html#id10">文件类型</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html#id11">文件权限</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/Linux%E4%B8%8B%E5%AE%89%E8%A3%85Eclipse.html">Linux下安装Eclipse</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E4%B8%8B%E5%AE%89%E8%A3%85Eclipse.html#id1">前提</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E4%B8%8B%E5%AE%89%E8%A3%85Eclipse.html#id2">下载安装包</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E4%B8%8B%E5%AE%89%E8%A3%85Eclipse.html#id3">复制文件</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E4%B8%8B%E5%AE%89%E8%A3%85Eclipse.html#id4">制作快捷方式</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E4%B8%8B%E5%AE%89%E8%A3%85Eclipse.html#id5">错误分析</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E4%B8%8B%E5%AE%89%E8%A3%85Eclipse.html#id6">参考</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://jingyan.baidu.com/article/86fae346b696633c49121a30.html">ubuntu下搭建JAVA开发环境</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://www.cnblogs.com/jerome-rong/archive/2013/02/19/2916608.html">A Java Runtime Environment (JRE) or Java Development Kit (JDK) must be avail</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/Linux%E7%BB%88%E7%AB%AF%E6%8F%90%E7%A4%BA%E7%AC%A6%E6%98%BE%E7%A4%BA%E9%A2%9C%E8%89%B2.html">Linux终端提示符显示颜色</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E7%BB%88%E7%AB%AF%E6%8F%90%E7%A4%BA%E7%AC%A6%E6%98%BE%E7%A4%BA%E9%A2%9C%E8%89%B2.html#id1">用法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E7%BB%88%E7%AB%AF%E6%8F%90%E7%A4%BA%E7%AC%A6%E6%98%BE%E7%A4%BA%E9%A2%9C%E8%89%B2.html#id2">参考</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.linuxidc.com/Linux/2014-10/108195.htm">Linux修改Shell命令提示符及颜色</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://www.centoscn.com/CentOS/2013/0418/321.html">修改Linux/Centos6终端命令提示符颜色</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/Linux%E5%88%A4%E6%96%AD%E6%96%87%E4%BB%B6%E5%92%8C%E6%96%87%E4%BB%B6%E5%A4%B9%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8.html">Linux判断文件和文件夹是否存在</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94adduser.html">Linux命令——adduser</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94adduser.html#adduser">adduser</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94adduser.html#useradd">useradd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94adduser.html#id1">参考网址</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.lx138.com/">Linux命令查询网站</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://man.linuxde.net/">Linux命令大全</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://baidu.com/">baidu</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://google.com.hk">Google</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94alias.html">Linux命令——alias</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94alias.html#alias">alias</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94alias.html#id1">参考网址</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.lx138.com/">Linux命令查询网站</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://man.linuxde.net/">Linux命令大全</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://baidu.com/">baidu</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://google.com.hk">Google</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94awk.html">Linux命令——awk</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94awk.html#awk">awk</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94awk.html#id1">参考网址</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.lx138.com/">Linux命令查询网站</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://man.linuxde.net/">Linux命令大全</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://baidu.com/">baidu</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://google.com.hk">Google</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94diff.html">Linux命令——diff</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94diff.html#diff">diff</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94diff.html#id1">参考网址</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.lx138.com/">Linux命令查询网站</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://man.linuxde.net/">Linux命令大全</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://baidu.com/">baidu</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://google.com.hk">Google</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94find.html">Linux命令——find</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94find.html#find">find</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94find.html#id1">参考网址</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.lx138.com/">Linux命令查询网站</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://man.linuxde.net/">Linux命令大全</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://baidu.com/">baidu</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://google.com.hk">Google</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94unalias.html">Linux命令——unalias</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94unalias.html#unalias">unalias</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94unalias.html#id1">参考网址</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.lx138.com/">Linux命令查询网站</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://man.linuxde.net/">Linux命令大全</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://baidu.com/">baidu</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://google.com.hk">Google</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94uname.html">Linux命令——uname</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94uname.html#uname">uname</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94uname.html#id1">参考网址</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.lx138.com/">Linux命令查询网站</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://man.linuxde.net/">Linux命令大全</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://baidu.com/">baidu</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://google.com.hk">Google</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94useradd.html">Linux命令——useradd</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94useradd.html#useradd">useradd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94useradd.html#id1">参考网址</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.lx138.com/">Linux命令查询网站</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://man.linuxde.net/">Linux命令大全</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://baidu.com/">baidu</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://google.com.hk">Google</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94userdel.html">Linux命令——userdel</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94userdel.html#userdel">userdel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94userdel.html#id1">参考网址</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.lx138.com/">Linux命令查询网站</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://man.linuxde.net/">Linux命令大全</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://baidu.com/">baidu</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://google.com.hk">Google</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94visudo.html">Linux命令——visudo</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94visudo.html#visudo">visudo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94visudo.html#id1">参考网址</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.lx138.com/">Linux命令查询网站</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://man.linuxde.net/">Linux命令大全</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://baidu.com/">baidu</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://google.com.hk">Google</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94whoami.html">Linux命令——whoami</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94whoami.html#whoami">whoami</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94whoami.html#id1">参考网址</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.lx138.com/">Linux命令查询网站</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://man.linuxde.net/">Linux命令大全</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://baidu.com/">baidu</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://google.com.hk">Google</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94who.html">Linux命令——who</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94who.html#who">who</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94who.html#id1">参考网址</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.lx138.com/">Linux命令查询网站</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://man.linuxde.net/">Linux命令大全</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://baidu.com/">baidu</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://google.com.hk">Google</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94w.html">Linux命令——w</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94w.html#w">w</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94w.html#id1">参考网址</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.lx138.com/">Linux命令查询网站</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://man.linuxde.net/">Linux命令大全</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://baidu.com/">baidu</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://google.com.hk">Google</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/Ubuntu%2014.04%2064bit%20%E5%AE%89%E8%A3%8532%E4%BD%8D%E5%85%BC%E5%AE%B9%E5%8C%85.html">Ubuntu 14.04 64bit 安装32位兼容包</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu%2014.04%2064bit%20%E5%AE%89%E8%A3%8532%E4%BD%8D%E5%85%BC%E5%AE%B9%E5%8C%85.html#id1">问题描述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu%2014.04%2064bit%20%E5%AE%89%E8%A3%8532%E4%BD%8D%E5%85%BC%E5%AE%B9%E5%8C%85.html#id2">安装过程</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu%2014.04%2064bit%20%E5%AE%89%E8%A3%8532%E4%BD%8D%E5%85%BC%E5%AE%B9%E5%8C%85.html#id3">参考</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.oschina.net/question/237198_146122">ubuntu 14.04 64位 怎么安装 32位 支持库啊？</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://www.oschina.net/question/1470892_151825">Ubuntu14.04如何安装32位兼容库,即ia32-libs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html">Ubuntu14.04安装Theano详细教程</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id1">环境</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id2">相关库简介</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id3">相关库的关系</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id4">相关库的安装顺序</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#numpyscipy">检查numpy和scipy是否通过测试</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id5">卸载numpy和scipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id6">安装各种包</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id7">安装numpy和scipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id8">安装线性计算库、numPy和sciPy的编译方法（推荐）</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#openblas">编译安装OpenBlas</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#numpy">安装numPy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#scipy">安装sciPy</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id9">安装其它库</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#theano">安装Theano</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id10">引用</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/Ubuntu%20Server%2014.04%E5%AE%89%E8%A3%85Gnome%E6%A1%8C%E9%9D%A2%E7%8E%AF%E5%A2%83.html">Ubuntu Server 14.04安装Gnome桌面环境</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu%20Server%2014.04%E5%AE%89%E8%A3%85Gnome%E6%A1%8C%E9%9D%A2%E7%8E%AF%E5%A2%83.html#id1">操作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu%20Server%2014.04%E5%AE%89%E8%A3%85Gnome%E6%A1%8C%E9%9D%A2%E7%8E%AF%E5%A2%83.html#id2">参考：</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/Ubuntu%20Server%20%E6%B7%BB%E5%8A%A0%E3%80%81%E5%88%A0%E9%99%A4%E5%92%8C%E4%BF%AE%E6%94%B9%E7%94%A8%E6%88%B7.html">Ubuntu Server 添加、删除和修改用户</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu%20Server%20%E6%B7%BB%E5%8A%A0%E3%80%81%E5%88%A0%E9%99%A4%E5%92%8C%E4%BF%AE%E6%94%B9%E7%94%A8%E6%88%B7.html#id1">添加用户</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu%20Server%20%E6%B7%BB%E5%8A%A0%E3%80%81%E5%88%A0%E9%99%A4%E5%92%8C%E4%BF%AE%E6%94%B9%E7%94%A8%E6%88%B7.html#id2">修改密码</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu%20Server%20%E6%B7%BB%E5%8A%A0%E3%80%81%E5%88%A0%E9%99%A4%E5%92%8C%E4%BF%AE%E6%94%B9%E7%94%A8%E6%88%B7.html#id3">删除用户</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu%20Server%20%E6%B7%BB%E5%8A%A0%E3%80%81%E5%88%A0%E9%99%A4%E5%92%8C%E4%BF%AE%E6%94%B9%E7%94%A8%E6%88%B7.html#id4">添加超级用户权限</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html">ubuntu中apt-get安装与默认路径</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html#apt-get">一、apt-get 安装</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html#dpkg-i">dpkg -i</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html#dpkg-c">dpkg -c</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html#id1">dpkg -I</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html#dpkg-r">dpkg -r</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html#dpkg-p">dpkg -P</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html#dpkg-l">dpkg -L</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html#dpkg-s">dpkg -s</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html#dpkg-reconfigure">dpkg-reconfigure</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html#id2">二、软件安装后相关文件位置</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html#id3">下载的软件存放位置</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html#id4">安装后软件默认位置</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html#id5">可执行文件位置</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html#id6">配置文件位置</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html#lib">lib文件位置</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/Ubuntu%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html">Ubuntu使用过程中遇到的问题</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html#id1">打开终端的方法</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html#id2">1. 快捷键</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html#dash">2. Dash主页图标</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html#id3">打开Dash的快捷键</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html#path">将./添加到PATH</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html#id4">目的</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html#id5">1. 临时方法</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html#environment">2. 修改environment文件</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html#bashrc">3. 修改～/.bashrc 文件</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html#profile">4. 修改profile 文件</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html#id6">安装软件<strong>源码</strong>的步骤</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html#vim">vim不显色的问题</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html#id7">vim不能正常使用方向键与退格键的问题</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html#id8">如何是配置立即生效</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Chrome.html">Ubuntu-安装-Chrome</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Chrome.html#chrome">一、下载Chrome的安装包</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Chrome.html#id1">二、安装Chrome</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Chrome.html#id2">三、修复安装错误</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Chrome.html#id3">四、参考文章：</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html">Ubuntu-安装-cuda7.0-单显卡-超详细教程</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id1">一、说明</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id2">二、准备</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id3">1. 更新操作系统</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#cuda7-0">2. 下载cuda7.0</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#nvidia">3. 下载NVIDIA显卡驱动</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id4">三、验证系统是否符合要求</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#cuda">1. 验证显卡是否支持cuda</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id5">2. 查看系统类型</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id6">四、安装NVIDIA显卡驱动</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#tty1">1. 切换到tty1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id7">2. 关闭显示器管理器</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id8">3. 禁用旧的显卡驱动</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id9">4. 安装新的驱动</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id10">5. 检验驱动是否安装成功</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id11">五、安装cuda</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id12">1. 安装依赖库</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id13">2. 运行cuda安装命令</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id14">3. 配置环境变量</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id15">4. 检验环境是否设置好</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id16">5.安装其他一些辅助库</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#cuda-samples">六、安装CUDA SAMPLES</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#nvcc">1. 验证nvcc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#make-cuda-samples">2. make cuda samples</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#cudnn">七、安装cuDNN</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id17">1. 下载cuDNN</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#cudnne">2. 安装cuDNNE</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id18">八、参考文章</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Python%E5%8C%85.html">Ubuntu-安装-Python包</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Python%E5%8C%85.html#apt-get">apt-get安装示例</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Python%E5%8C%85.html#pip">pip安装示例</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Shadowsocks.html">Ubuntu-安装-Shadowsocks</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Shadowsocks.html#id1">系统环境</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Shadowsocks.html#id2">安装依赖关系</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Shadowsocks.html#shadowsocks">找到shadowsocks的安装位置</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Shadowsocks.html#id3">新建并修改配置文件</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Shadowsocks.html#id4">运行shadowsocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Shadowsocks.html#id5">开机自动启动</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Shadowsocks.html#switchysharp">配置SwitchySharp</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html">Ubuntu-安装-theano+caffe-超详细教程</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id1">一、说明</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#theano">二、安装Theano</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id2">1. 安装各种包</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#numpyscipy">2. 安装numpy和scipy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id3">3. 安装Theano</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#pycuda">4. 安装pyCUDA</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#cuda-ndarray-cu">5. 解决cuda_ndarray.cu错误</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id4">6. 配置Theano</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#theanogpu">7. 测试Theano是否在使用GPU</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id5">Theano相关资料</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#opencv">安装OpenCV</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id6">下载OpenCV</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id7">安装其它依赖项</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#glog">安装glog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#caffe">安装caffe</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id8">下载caffe</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#makefile-config">编辑Makefile.config</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#python">配置Python相关选项</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#matlab">安装Matlab</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id9">参考文章</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://blog.csdn.net/xuezhisdc/article/details/47065475">Ubuntu14.04安装Theano详细教程</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://caffe.berkeleyvision.org/installation.html">caffe官方安装教程</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://www.cnblogs.com/platero/p/3993877.html">Caffe + Ubuntu 14.04 64bit + CUDA 6.5 配置说明</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://www.linuxidc.com/Linux/2015-07/120449.htm">Caffe在Ubuntu 14.04 64bit 下的安装</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://seraphli.insecterswar.com/archives/category/dev/code">Ubuntu Theano CUDA</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://blog.csdn.net/sysuwuhongpeng/article/details/45485719">Unsupported gpu architecture</a></li>
+<li class="toctree-l4"><a class="reference external" href="https://ouxinyu.github.io/Blogs/20140723001.html">Caffe + Ubuntu 15.04 + CUDA 7.0 新手安装配置指南(推荐)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-%E6%90%9C%E7%8B%97%E8%BE%93%E5%85%A5%E6%B3%95-%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html">Ubuntu-安装-搜狗输入法-详细教程</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-%E6%90%9C%E7%8B%97%E8%BE%93%E5%85%A5%E6%B3%95-%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#deb">下载deb安装包</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-%E6%90%9C%E7%8B%97%E8%BE%93%E5%85%A5%E6%B3%95-%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#fcitx">安装fcitx</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-%E6%90%9C%E7%8B%97%E8%BE%93%E5%85%A5%E6%B3%95-%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id1">安装搜狗输入法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-%E6%90%9C%E7%8B%97%E8%BE%93%E5%85%A5%E6%B3%95-%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id2">配置输入方法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-%E6%90%9C%E7%8B%97%E8%BE%93%E5%85%A5%E6%B3%95-%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id3">重启</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-%E6%90%9C%E7%8B%97%E8%BE%93%E5%85%A5%E6%B3%95-%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id4">添加搜狗输入法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-%E6%90%9C%E7%8B%97%E8%BE%93%E5%85%A5%E6%B3%95-%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id5">参考</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-%E6%9C%89%E9%81%93%E8%AF%8D%E5%85%B8.html">Ubuntu-安装-有道词典</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-%E6%9C%89%E9%81%93%E8%AF%8D%E5%85%B8.html#id1">添加源，并更新</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Linux/Ubuntu-%E5%AE%89%E8%A3%85-%E6%9C%89%E9%81%93%E8%AF%8D%E5%85%B8.html#id2">安装软件包</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/index.html">博客运维</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/%E5%9F%9F%E5%90%8D%E9%87%8D%E5%AE%9A%E5%90%91%E7%9A%84%E5%8F%98%E9%80%9A%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95.html">域名重定向的变通实现方法</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/%E5%9F%9F%E5%90%8D%E9%87%8D%E5%AE%9A%E5%90%91%E7%9A%84%E5%8F%98%E9%80%9A%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95.html#id2">问题</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/%E5%9F%9F%E5%90%8D%E9%87%8D%E5%AE%9A%E5%90%91%E7%9A%84%E5%8F%98%E9%80%9A%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95.html#id3">失败方法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/%E5%9F%9F%E5%90%8D%E9%87%8D%E5%AE%9A%E5%90%91%E7%9A%84%E5%8F%98%E9%80%9A%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95.html#id4">成功方法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/%E5%9F%9F%E5%90%8D%E9%87%8D%E5%AE%9A%E5%90%91%E7%9A%84%E5%8F%98%E9%80%9A%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95.html#id5">原理解释</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/travis-ci%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E4%BC%98%E5%8C%96.html">优化travis-ci配置文件</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/travis-ci%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E4%BC%98%E5%8C%96.html#id1">问题</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/travis-ci%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E4%BC%98%E5%8C%96.html#id2">优化方法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/travis-ci%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E4%BC%98%E5%8C%96.html#id3">结果</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html">hexo教程系列——hexo安装教程</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#node-js">安装node.js</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#npm">设置npm淘宝镜像站</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#github">申请Github账号</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#id1">创建博客仓库</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#git">安装git</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#ssh">配置ssh</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#id2">将公匙添加到github上</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#hexo">安装hexo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#id3">初探hexo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#hexogithub">将hexo博客部署到github上</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#id4">部署hexo</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#id5">hexo命令缩写</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#id6">hexo组合命令</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#id7">常见问题</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#hexo-deploy">hexo deploy没有反应？</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#hexo-s">hexo s 网站打不开？</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#id8">如何换主题？</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#id9">参考博客</a><ul>
+<li class="toctree-l4"><a class="reference external" href="https://hexo.io/zh-cn/">hexo官方文档</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://theme-next.iissnan.com/getting-started.html">NexT主题官方文档</a></li>
+<li class="toctree-l4"><a class="reference external" href="https://www.zhihu.com/question/29017171">hexo 下的分类和表签无法显示，怎么解决？</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://www.jianshu.com/p/f4cc5866946b">手把手教从零开始在GitHub上使用Hexo搭建博客教程(一)</a></li>
+<li class="toctree-l4"><a class="reference external" href="https://segmentfault.com/q/1010000004593371">Github上搭建Hexo如何跨电脑写作部署方便？</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://blog.bigruan.com/2015-03-09-Continuous-Integration-Your-Hexo-Blog-With-TravisCI/">Continuous Integration Your Hexo Blog With Travis CI</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://www.jianshu.com/p/1d427e888dda">【Hexo+Github】域名和github绑定的问题</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://www.jianshu.com/p/3cb4c9ff5b58">万网域名+GitHub平台搭建的博客</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B.html">hexo教程系列——hexo配置教程</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B.html#id1">网站的配置文件</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B.html#id2">主题的配置文件</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B.html#id3">参考博客</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.jianshu.com/p/dd9ef08b12df">手把手教从零开始在GitHub上使用Hexo搭建博客教程(二)</a></li>
+<li class="toctree-l4"><a class="reference external" href="https://hexo.io/zh-cn/docs/index.html">hexo官方文档</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://theme-next.iissnan.com/getting-started.html">next主题官方文档</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BD%BF%E7%94%A8Travis%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2hexo.html">hexo教程系列——使用Travis自动部署hexo</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BD%BF%E7%94%A8Travis%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2hexo.html#id1">说明</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BD%BF%E7%94%A8Travis%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2hexo.html#personal-access-token">新建Personal Access Token</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BD%BF%E7%94%A8Travis%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2hexo.html#travis-ci">配置Travis CI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BD%BF%E7%94%A8Travis%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2hexo.html#id2">登录并配置Travis CI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BD%BF%E7%94%A8Travis%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2hexo.html#travis">本地安装Travis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BD%BF%E7%94%A8Travis%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2hexo.html#id3">创建并修改配置文件</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BD%BF%E7%94%A8Travis%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2hexo.html#github">创建仓库，推送到GitHub</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BD%BF%E7%94%A8Travis%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2hexo.html#id4">参考博客</a><ul>
+<li class="toctree-l4"><a class="reference external" href="https://hexo.io/zh-cn/">hexo官方文档</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://theme-next.iissnan.com/getting-started.html">NexT主题官方文档</a></li>
+<li class="toctree-l4"><a class="reference external" href="https://www.zhihu.com/question/29017171">hexo 下的分类和表签无法显示，怎么解决？</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://www.jianshu.com/p/f4cc5866946b">手把手教从零开始在GitHub上使用Hexo搭建博客教程(一)</a></li>
+<li class="toctree-l4"><a class="reference external" href="https://segmentfault.com/q/1010000004593371">Github上搭建Hexo如何跨电脑写作部署方便？</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://blog.bigruan.com/2015-03-09-Continuous-Integration-Your-Hexo-Blog-With-TravisCI/">Continuous Integration Your Hexo Blog With Travis CI</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://www.jianshu.com/p/1d427e888dda">【Hexo+Github】域名和github绑定的问题</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://www.jianshu.com/p/3cb4c9ff5b58">万网域名+GitHub平台搭建的博客</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/%E6%B5%8B%E8%AF%95MD%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95.html">测试公式</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/%E6%B5%8B%E8%AF%95MD%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95.html#id2">测试代码块</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/%E6%B5%8B%E8%AF%95MD%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95.html#id3">测试链接</a><ul>
+<li class="toctree-l3"><a class="reference external" href="http://www.baidu.com">baidu</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/%E6%B5%8B%E8%AF%95MD%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95.html#id4">测试图片</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">张学志の博客</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">PCL</a> &raquo;</li>
+        
+      <li>PCL系列——如何逐渐地配准一对点云</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/PCL/PCL系列——如何逐渐地配准一对点云.md.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="pcl">
+<h1>PCL系列——如何逐渐地配准一对点云<a class="headerlink" href="#pcl" title="永久链接至标题">¶</a></h1>
+<section id="id1">
+<h2>PCL系列<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E8%AF%BB%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——读入PCD格式文件操作</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——将点云数据写入PCD格式文件</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91/">PCL系列——拼接两个点云</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%EF%BC%88RangeImage%EF%BC%89%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9/">PCL系列——从深度图像（RangeImage）中提取NARF关键点</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F/">PCL系列——如何可视化深度图像</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://zhangxuezhi.com/2016/03/31/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86/">PCL系列——如何使用迭代最近点法（ICP）配准</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E9%80%90%E6%B8%90%E5%9C%B0%E9%85%8D%E5%87%86%E4%B8%80%E5%AF%B9%E7%82%B9%E4%BA%91/">PCL系列——如何逐渐地配准一对点云</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E6%B3%8A%E6%9D%BE%E9%87%8D%E6%9E%84/">PCL系列——三维重构之泊松重构</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E8%B4%AA%E5%A9%AA%E4%B8%89%E8%A7%92%E6%8A%95%E5%BD%B1%E7%AE%97%E6%B3%95/">PCL系列——三维重构之贪婪三角投影算法</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%8B%E6%96%B9%E4%BD%93%E7%AE%97%E6%B3%95/">PCL系列——三维重构之移动立方体算法</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2/">PCL系列——平面模型分割</a></li>
+</ul>
+</div>
+</section>
+<section id="id2">
+<h2>说明<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<p>通过本教程，我们将会学会：</p>
+<ul class="simple">
+<li><p>如何配准多个点云图。</p></li>
+<li><p>配准的方法是：点云图两两配准，计算它们的变换矩阵，然后计算总的变换矩阵。</p></li>
+<li><p>两个点云配准使用的是非线性ICP算法，它是ICP的算法的变体，使用Levenberg-Marquardt最优化。</p></li>
+</ul>
+</section>
+<section id="id3">
+<h2>操作<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<ul class="simple">
+<li><p>在VS2010 中新建一个文件 <code class="docutils literal notranslate"><span class="pre">pairwise_incremental_registration.cpp</span></code>，然后将下面的代码复制到文件中。</p></li>
+<li><p>参照之前的文章，配置项目的属性。设置包含目录和库目录和附加依赖项。</p></li>
+</ul>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;boost/make_shared.hpp&gt;</span><span class="c1"> //共享指针</span><span class="cp"></span>
+<span class="c1">//点/点云</span>
+<span class="cp">#include</span> <span class="cpf">&lt;pcl/point_types.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;pcl/point_cloud.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;pcl/point_representation.h&gt;</span><span class="cp"></span>
+<span class="c1">//pcd文件输入/输出</span>
+<span class="cp">#include</span> <span class="cpf">&lt;pcl/io/pcd_io.h&gt;</span><span class="cp"></span>
+<span class="c1">//滤波</span>
+<span class="cp">#include</span> <span class="cpf">&lt;pcl/filters/voxel_grid.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;pcl/filters/filter.h&gt;</span><span class="cp"></span>
+<span class="c1">//特征</span>
+<span class="cp">#include</span> <span class="cpf">&lt;pcl/features/normal_3d.h&gt;</span><span class="cp"></span>
+<span class="c1">//配准</span>
+<span class="cp">#include</span> <span class="cpf">&lt;pcl/registration/icp.h&gt;</span><span class="c1"> //ICP方法</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;pcl/registration/icp_nl.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;pcl/registration/transforms.h&gt;</span><span class="cp"></span>
+<span class="c1">//可视化</span>
+<span class="cp">#include</span> <span class="cpf">&lt;pcl/visualization/pcl_visualizer.h&gt;</span><span class="cp"></span>
+
+<span class="c1">//命名空间</span>
+<span class="k">using</span> <span class="n">pcl</span><span class="o">::</span><span class="n">visualization</span><span class="o">::</span><span class="n">PointCloudColorHandlerGenericField</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">pcl</span><span class="o">::</span><span class="n">visualization</span><span class="o">::</span><span class="n">PointCloudColorHandlerCustom</span><span class="p">;</span>
+
+<span class="c1">//定义类型的别名</span>
+<span class="k">typedef</span> <span class="n">pcl</span><span class="o">::</span><span class="n">PointXYZ</span> <span class="n">PointT</span><span class="p">;</span>
+<span class="k">typedef</span> <span class="n">pcl</span><span class="o">::</span><span class="n">PointCloud</span><span class="o">&lt;</span><span class="n">PointT</span><span class="o">&gt;</span> <span class="n">PointCloud</span><span class="p">;</span>
+<span class="k">typedef</span> <span class="n">pcl</span><span class="o">::</span><span class="n">PointNormal</span> <span class="n">PointNormalT</span><span class="p">;</span>
+<span class="k">typedef</span> <span class="n">pcl</span><span class="o">::</span><span class="n">PointCloud</span><span class="o">&lt;</span><span class="n">PointNormalT</span><span class="o">&gt;</span> <span class="n">PointCloudWithNormals</span><span class="p">;</span>
+
+<span class="c1">//全局变量</span>
+<span class="c1">//可视化对象</span>
+<span class="n">pcl</span><span class="o">::</span><span class="n">visualization</span><span class="o">::</span><span class="n">PCLVisualizer</span> <span class="o">*</span><span class="n">p</span><span class="p">;</span>
+<span class="c1">//左视区和右视区，可视化窗口分成左右两部分</span>
+<span class="kt">int</span> <span class="n">vp_1</span><span class="p">,</span> <span class="n">vp_2</span><span class="p">;</span>
+
+<span class="c1">//定义结构体，用于处理点云</span>
+<span class="k">struct</span> <span class="nc">PCD</span>
+<span class="p">{</span>
+  <span class="n">PointCloud</span><span class="o">::</span><span class="n">Ptr</span> <span class="n">cloud</span><span class="p">;</span> <span class="c1">//点云指针</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">f_name</span><span class="p">;</span> <span class="c1">//文件名</span>
+	<span class="c1">//构造函数</span>
+  <span class="n">PCD</span><span class="p">()</span> <span class="o">:</span> <span class="n">cloud</span> <span class="p">(</span><span class="k">new</span> <span class="n">PointCloud</span><span class="p">)</span> <span class="p">{};</span> <span class="c1">//初始化</span>
+<span class="p">};</span>
+
+
+<span class="c1">// 定义新的点表达方式&lt; x, y, z, curvature &gt; 坐标+曲率</span>
+<span class="k">class</span> <span class="nc">MyPointRepresentation</span> <span class="o">:</span> <span class="k">public</span> <span class="n">pcl</span><span class="o">::</span><span class="n">PointRepresentation</span> <span class="o">&lt;</span><span class="n">PointNormalT</span><span class="o">&gt;</span> <span class="c1">//继承关系</span>
+<span class="p">{</span>
+  <span class="k">using</span> <span class="n">pcl</span><span class="o">::</span><span class="n">PointRepresentation</span><span class="o">&lt;</span><span class="n">PointNormalT</span><span class="o">&gt;::</span><span class="n">nr_dimensions_</span><span class="p">;</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="n">MyPointRepresentation</span> <span class="p">()</span>
+  <span class="p">{</span>
+    <span class="c1">//指定维数</span>
+    <span class="n">nr_dimensions_</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">//重载函数copyToFloatArray，以定义自己的特征向量</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="n">copyToFloatArray</span> <span class="p">(</span><span class="k">const</span> <span class="n">PointNormalT</span> <span class="o">&amp;</span><span class="n">p</span><span class="p">,</span> <span class="kt">float</span> <span class="o">*</span> <span class="n">out</span><span class="p">)</span> <span class="k">const</span>
+  <span class="p">{</span>
+    <span class="c1">//&lt; x, y, z, curvature &gt; 坐标xyz和曲率</span>
+    <span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+    <span class="n">out</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span><span class="p">.</span><span class="n">y</span><span class="p">;</span>
+    <span class="n">out</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span><span class="p">.</span><span class="n">z</span><span class="p">;</span>
+    <span class="n">out</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span><span class="p">.</span><span class="n">curvature</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+
+
+<span class="c1">//在窗口的左视区，简单的显示源点云和目标点云</span>
+<span class="kt">void</span> <span class="nf">showCloudsLeft</span><span class="p">(</span><span class="k">const</span> <span class="n">PointCloud</span><span class="o">::</span><span class="n">Ptr</span> <span class="n">cloud_target</span><span class="p">,</span> <span class="k">const</span> <span class="n">PointCloud</span><span class="o">::</span><span class="n">Ptr</span> <span class="n">cloud_source</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">p</span><span class="o">-&gt;</span><span class="n">removePointCloud</span> <span class="p">(</span><span class="s">&quot;vp1_target&quot;</span><span class="p">);</span> <span class="c1">//根据给定的ID，从屏幕中去除一个点云。参数是ID</span>
+  <span class="n">p</span><span class="o">-&gt;</span><span class="n">removePointCloud</span> <span class="p">(</span><span class="s">&quot;vp1_source&quot;</span><span class="p">);</span> <span class="c1">//</span>
+  <span class="n">PointCloudColorHandlerCustom</span><span class="o">&lt;</span><span class="n">PointT</span><span class="o">&gt;</span> <span class="n">tgt_h</span> <span class="p">(</span><span class="n">cloud_target</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span> <span class="c1">//目标点云绿色</span>
+  <span class="n">PointCloudColorHandlerCustom</span><span class="o">&lt;</span><span class="n">PointT</span><span class="o">&gt;</span> <span class="n">src_h</span> <span class="p">(</span><span class="n">cloud_source</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span> <span class="c1">//源点云红色</span>
+  <span class="n">p</span><span class="o">-&gt;</span><span class="n">addPointCloud</span> <span class="p">(</span><span class="n">cloud_target</span><span class="p">,</span> <span class="n">tgt_h</span><span class="p">,</span> <span class="s">&quot;vp1_target&quot;</span><span class="p">,</span> <span class="n">vp_1</span><span class="p">);</span> <span class="c1">//加载点云</span>
+  <span class="n">p</span><span class="o">-&gt;</span><span class="n">addPointCloud</span> <span class="p">(</span><span class="n">cloud_source</span><span class="p">,</span> <span class="n">src_h</span><span class="p">,</span> <span class="s">&quot;vp1_source&quot;</span><span class="p">,</span> <span class="n">vp_1</span><span class="p">);</span>
+  <span class="n">PCL_INFO</span> <span class="p">(</span><span class="s">&quot;Press q to begin the registration.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span> <span class="c1">//在命令行中显示提示信息</span>
+  <span class="n">p</span><span class="o">-&gt;</span> <span class="n">spin</span><span class="p">();</span>
+<span class="p">}</span>
+
+
+<span class="c1">//在窗口的右视区，简单的显示源点云和目标点云</span>
+<span class="kt">void</span> <span class="nf">showCloudsRight</span><span class="p">(</span><span class="k">const</span> <span class="n">PointCloudWithNormals</span><span class="o">::</span><span class="n">Ptr</span> <span class="n">cloud_target</span><span class="p">,</span> <span class="k">const</span> <span class="n">PointCloudWithNormals</span><span class="o">::</span><span class="n">Ptr</span> <span class="n">cloud_source</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">p</span><span class="o">-&gt;</span><span class="n">removePointCloud</span> <span class="p">(</span><span class="s">&quot;source&quot;</span><span class="p">);</span> <span class="c1">//根据给定的ID，从屏幕中去除一个点云。参数是ID</span>
+  <span class="n">p</span><span class="o">-&gt;</span><span class="n">removePointCloud</span> <span class="p">(</span><span class="s">&quot;target&quot;</span><span class="p">);</span>
+  <span class="n">PointCloudColorHandlerGenericField</span><span class="o">&lt;</span><span class="n">PointNormalT</span><span class="o">&gt;</span> <span class="n">tgt_color_handler</span> <span class="p">(</span><span class="n">cloud_target</span><span class="p">,</span> <span class="s">&quot;curvature&quot;</span><span class="p">);</span> <span class="c1">//目标点云彩色句柄</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">tgt_color_handler</span><span class="p">.</span><span class="n">isCapable</span> <span class="p">())</span>
+      <span class="n">PCL_WARN</span> <span class="p">(</span><span class="s">&quot;Cannot create curvature color handler!&quot;</span><span class="p">);</span>
+  <span class="n">PointCloudColorHandlerGenericField</span><span class="o">&lt;</span><span class="n">PointNormalT</span><span class="o">&gt;</span> <span class="n">src_color_handler</span> <span class="p">(</span><span class="n">cloud_source</span><span class="p">,</span> <span class="s">&quot;curvature&quot;</span><span class="p">);</span> <span class="c1">//源点云彩色句柄</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">src_color_handler</span><span class="p">.</span><span class="n">isCapable</span> <span class="p">())</span>
+      <span class="n">PCL_WARN</span> <span class="p">(</span><span class="s">&quot;Cannot create curvature color handler!&quot;</span><span class="p">);</span>
+  <span class="n">p</span><span class="o">-&gt;</span><span class="n">addPointCloud</span> <span class="p">(</span><span class="n">cloud_target</span><span class="p">,</span> <span class="n">tgt_color_handler</span><span class="p">,</span> <span class="s">&quot;target&quot;</span><span class="p">,</span> <span class="n">vp_2</span><span class="p">);</span> <span class="c1">//加载点云</span>
+  <span class="n">p</span><span class="o">-&gt;</span><span class="n">addPointCloud</span> <span class="p">(</span><span class="n">cloud_source</span><span class="p">,</span> <span class="n">src_color_handler</span><span class="p">,</span> <span class="s">&quot;source&quot;</span><span class="p">,</span> <span class="n">vp_2</span><span class="p">);</span>
+  <span class="n">p</span><span class="o">-&gt;</span><span class="n">spinOnce</span><span class="p">();</span>
+<span class="p">}</span>
+
+
+<span class="c1">// 读取一系列的PCD文件（希望配准的点云文件）</span>
+<span class="c1">// 参数argc 参数的数量（来自main()）</span>
+<span class="c1">// 参数argv 参数的列表（来自main()）</span>
+<span class="c1">// 参数models 点云数据集的结果向量</span>
+<span class="kt">void</span> <span class="nf">loadData</span> <span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">PCD</span><span class="p">,</span> <span class="n">Eigen</span><span class="o">::</span><span class="n">aligned_allocator</span><span class="o">&lt;</span><span class="n">PCD</span><span class="o">&gt;</span> <span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">models</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">extension</span> <span class="p">(</span><span class="s">&quot;.pcd&quot;</span><span class="p">);</span> <span class="c1">//声明并初始化string类型变量extension，表示文件后缀名</span>
+  <span class="c1">// 通过遍历文件名，读取pcd文件</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">argc</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="c1">//遍历所有的文件名（略过程序名）</span>
+  <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">fname</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">fname</span><span class="p">.</span><span class="n">size</span> <span class="p">()</span> <span class="o">&lt;=</span> <span class="n">extension</span><span class="p">.</span><span class="n">size</span> <span class="p">())</span> <span class="c1">//文件名的长度是否符合要求</span>
+      <span class="k">continue</span><span class="p">;</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="n">transform</span> <span class="p">(</span><span class="n">fname</span><span class="p">.</span><span class="n">begin</span> <span class="p">(),</span> <span class="n">fname</span><span class="p">.</span><span class="n">end</span> <span class="p">(),</span> <span class="n">fname</span><span class="p">.</span><span class="n">begin</span> <span class="p">(),</span> <span class="p">(</span><span class="kt">int</span><span class="p">(</span><span class="o">*</span><span class="p">)(</span><span class="kt">int</span><span class="p">))</span><span class="n">tolower</span><span class="p">);</span> <span class="c1">//将某操作(小写字母化)应用于指定范围的每个元素</span>
+    <span class="c1">//检查文件是否是pcd文件</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">fname</span><span class="p">.</span><span class="n">compare</span> <span class="p">(</span><span class="n">fname</span><span class="p">.</span><span class="n">size</span> <span class="p">()</span> <span class="o">-</span> <span class="n">extension</span><span class="p">.</span><span class="n">size</span> <span class="p">(),</span> <span class="n">extension</span><span class="p">.</span><span class="n">size</span> <span class="p">(),</span> <span class="n">extension</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">{</span>
+      <span class="c1">// 读取点云，并保存到models</span>
+      <span class="n">PCD</span> <span class="n">m</span><span class="p">;</span>
+      <span class="n">m</span><span class="p">.</span><span class="n">f_name</span> <span class="o">=</span> <span class="n">argv</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+      <span class="n">pcl</span><span class="o">::</span><span class="n">io</span><span class="o">::</span><span class="n">loadPCDFile</span> <span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">*</span><span class="n">m</span><span class="p">.</span><span class="n">cloud</span><span class="p">);</span> <span class="c1">//读取点云数据</span>
+      <span class="c1">//去除点云中的NaN点（xyz都是NaN）</span>
+      <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">indices</span><span class="p">;</span> <span class="c1">//保存去除的点的索引</span>
+      <span class="n">pcl</span><span class="o">::</span><span class="n">removeNaNFromPointCloud</span><span class="p">(</span><span class="o">*</span><span class="n">m</span><span class="p">.</span><span class="n">cloud</span><span class="p">,</span><span class="o">*</span><span class="n">m</span><span class="p">.</span><span class="n">cloud</span><span class="p">,</span> <span class="n">indices</span><span class="p">);</span> <span class="c1">//去除点云中的NaN点</span>
+
+      <span class="n">models</span><span class="p">.</span><span class="n">push_back</span> <span class="p">(</span><span class="n">m</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+
+<span class="c1">//简单地配准一对点云数据，并返回结果</span>
+<span class="c1">//参数cloud_src  源点云</span>
+<span class="c1">//参数cloud_tgt  目标点云</span>
+<span class="c1">//参数output     输出点云</span>
+<span class="c1">//参数final_transform 成对变换矩阵</span>
+<span class="c1">//参数downsample 是否下采样</span>
+<span class="kt">void</span> <span class="nf">pairAlign</span> <span class="p">(</span><span class="k">const</span> <span class="n">PointCloud</span><span class="o">::</span><span class="n">Ptr</span> <span class="n">cloud_src</span><span class="p">,</span> <span class="k">const</span> <span class="n">PointCloud</span><span class="o">::</span><span class="n">Ptr</span> <span class="n">cloud_tgt</span><span class="p">,</span> <span class="n">PointCloud</span><span class="o">::</span><span class="n">Ptr</span> <span class="n">output</span><span class="p">,</span> <span class="n">Eigen</span><span class="o">::</span><span class="n">Matrix4f</span> <span class="o">&amp;</span><span class="n">final_transform</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">downsample</span> <span class="o">=</span> <span class="nb">false</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="c1">//</span>
+  <span class="c1">//为了一致性和速度，下采样</span>
+  <span class="c1">// \note enable this for large datasets</span>
+  <span class="n">PointCloud</span><span class="o">::</span><span class="n">Ptr</span> <span class="n">src</span> <span class="p">(</span><span class="k">new</span> <span class="n">PointCloud</span><span class="p">);</span> <span class="c1">//创建点云指针</span>
+  <span class="n">PointCloud</span><span class="o">::</span><span class="n">Ptr</span> <span class="n">tgt</span> <span class="p">(</span><span class="k">new</span> <span class="n">PointCloud</span><span class="p">);</span>
+  <span class="n">pcl</span><span class="o">::</span><span class="n">VoxelGrid</span><span class="o">&lt;</span><span class="n">PointT</span><span class="o">&gt;</span> <span class="n">grid</span><span class="p">;</span> <span class="c1">//VoxelGrid 把一个给定的点云，聚集在一个局部的3D网格上,并下采样和滤波点云数据</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">downsample</span><span class="p">)</span> <span class="c1">//下采样</span>
+  <span class="p">{</span>
+    <span class="n">grid</span><span class="p">.</span><span class="n">setLeafSize</span> <span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">);</span> <span class="c1">//设置体元网格的叶子大小</span>
+		<span class="c1">//下采样 源点云</span>
+    <span class="n">grid</span><span class="p">.</span><span class="n">setInputCloud</span> <span class="p">(</span><span class="n">cloud_src</span><span class="p">);</span> <span class="c1">//设置输入点云</span>
+    <span class="n">grid</span><span class="p">.</span><span class="n">filter</span> <span class="p">(</span><span class="o">*</span><span class="n">src</span><span class="p">);</span> <span class="c1">//下采样和滤波，并存储在src中</span>
+		<span class="c1">//下采样 目标点云</span>
+    <span class="n">grid</span><span class="p">.</span><span class="n">setInputCloud</span> <span class="p">(</span><span class="n">cloud_tgt</span><span class="p">);</span>
+    <span class="n">grid</span><span class="p">.</span><span class="n">filter</span> <span class="p">(</span><span class="o">*</span><span class="n">tgt</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="c1">//不下采样</span>
+  <span class="p">{</span>
+    <span class="n">src</span> <span class="o">=</span> <span class="n">cloud_src</span><span class="p">;</span> <span class="c1">//直接复制</span>
+    <span class="n">tgt</span> <span class="o">=</span> <span class="n">cloud_tgt</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">//计算曲面的法向量和曲率</span>
+  <span class="n">PointCloudWithNormals</span><span class="o">::</span><span class="n">Ptr</span> <span class="n">points_with_normals_src</span> <span class="p">(</span><span class="k">new</span> <span class="n">PointCloudWithNormals</span><span class="p">);</span> <span class="c1">//创建源点云指针（注意点的类型包含坐标和法向量）</span>
+  <span class="n">PointCloudWithNormals</span><span class="o">::</span><span class="n">Ptr</span> <span class="n">points_with_normals_tgt</span> <span class="p">(</span><span class="k">new</span> <span class="n">PointCloudWithNormals</span><span class="p">);</span> <span class="c1">//创建目标点云指针（注意点的类型包含坐标和法向量）</span>
+  <span class="n">pcl</span><span class="o">::</span><span class="n">NormalEstimation</span><span class="o">&lt;</span><span class="n">PointT</span><span class="p">,</span> <span class="n">PointNormalT</span><span class="o">&gt;</span> <span class="n">norm_est</span><span class="p">;</span> <span class="c1">//该对象用于计算法向量</span>
+  <span class="n">pcl</span><span class="o">::</span><span class="n">search</span><span class="o">::</span><span class="n">KdTree</span><span class="o">&lt;</span><span class="n">pcl</span><span class="o">::</span><span class="n">PointXYZ</span><span class="o">&gt;::</span><span class="n">Ptr</span> <span class="n">tree</span> <span class="p">(</span><span class="k">new</span> <span class="n">pcl</span><span class="o">::</span><span class="n">search</span><span class="o">::</span><span class="n">KdTree</span><span class="o">&lt;</span><span class="n">pcl</span><span class="o">::</span><span class="n">PointXYZ</span><span class="o">&gt;</span> <span class="p">());</span> <span class="c1">//创建kd树，用于计算法向量的搜索方法</span>
+  <span class="n">norm_est</span><span class="p">.</span><span class="n">setSearchMethod</span> <span class="p">(</span><span class="n">tree</span><span class="p">);</span> <span class="c1">//设置搜索方法</span>
+  <span class="n">norm_est</span><span class="p">.</span><span class="n">setKSearch</span> <span class="p">(</span><span class="mi">30</span><span class="p">);</span> <span class="c1">//设置最近邻的数量</span>
+  <span class="n">norm_est</span><span class="p">.</span><span class="n">setInputCloud</span> <span class="p">(</span><span class="n">src</span><span class="p">);</span> <span class="c1">//设置输入云</span>
+  <span class="n">norm_est</span><span class="p">.</span><span class="n">compute</span> <span class="p">(</span><span class="o">*</span><span class="n">points_with_normals_src</span><span class="p">);</span> <span class="c1">//计算法向量，并存储在points_with_normals_src</span>
+  <span class="n">pcl</span><span class="o">::</span><span class="n">copyPointCloud</span> <span class="p">(</span><span class="o">*</span><span class="n">src</span><span class="p">,</span> <span class="o">*</span><span class="n">points_with_normals_src</span><span class="p">);</span> <span class="c1">//复制点云（坐标）到points_with_normals_src（包含坐标和法向量）</span>
+  <span class="n">norm_est</span><span class="p">.</span><span class="n">setInputCloud</span> <span class="p">(</span><span class="n">tgt</span><span class="p">);</span> <span class="c1">//这3行计算目标点云的法向量，同上</span>
+  <span class="n">norm_est</span><span class="p">.</span><span class="n">compute</span> <span class="p">(</span><span class="o">*</span><span class="n">points_with_normals_tgt</span><span class="p">);</span>
+  <span class="n">pcl</span><span class="o">::</span><span class="n">copyPointCloud</span> <span class="p">(</span><span class="o">*</span><span class="n">tgt</span><span class="p">,</span> <span class="o">*</span><span class="n">points_with_normals_tgt</span><span class="p">);</span>
+
+  <span class="c1">//创建一个 自定义点表达方式的 实例</span>
+  <span class="n">MyPointRepresentation</span> <span class="n">point_representation</span><span class="p">;</span>
+  <span class="c1">//加权曲率维度，以和坐标xyz保持平衡</span>
+  <span class="kt">float</span> <span class="n">alpha</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">};</span>
+  <span class="n">point_representation</span><span class="p">.</span><span class="n">setRescaleValues</span> <span class="p">(</span><span class="n">alpha</span><span class="p">);</span> <span class="c1">//设置缩放值（向量化点时使用）</span>
+
+  <span class="c1">//创建非线性ICP对象 并设置参数</span>
+  <span class="n">pcl</span><span class="o">::</span><span class="n">IterativeClosestPointNonLinear</span><span class="o">&lt;</span><span class="n">PointNormalT</span><span class="p">,</span> <span class="n">PointNormalT</span><span class="o">&gt;</span> <span class="n">reg</span><span class="p">;</span> <span class="c1">//创建非线性ICP对象（ICP变体，使用Levenberg-Marquardt最优化）</span>
+  <span class="n">reg</span><span class="p">.</span><span class="n">setTransformationEpsilon</span> <span class="p">(</span><span class="mf">1e-6</span><span class="p">);</span> <span class="c1">//设置容许的最大误差（迭代最优化）</span>
+  <span class="c1">//***** 注意：根据自己数据库的大小调节该参数</span>
+  <span class="n">reg</span><span class="p">.</span><span class="n">setMaxCorrespondenceDistance</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">);</span>  <span class="c1">//设置对应点之间的最大距离（0.1m）,在配准过程中，忽略大于该阈值的点</span>
+  <span class="n">reg</span><span class="p">.</span><span class="n">setPointRepresentation</span> <span class="p">(</span><span class="n">boost</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">MyPointRepresentation</span><span class="o">&gt;</span> <span class="p">(</span><span class="n">point_representation</span><span class="p">));</span> <span class="c1">//设置点表达</span>
+	<span class="c1">//设置源点云和目标点云</span>
+  <span class="c1">//reg.setInputSource (points_with_normals_src); //版本不符合，使用下面的语句</span>
+	<span class="n">reg</span><span class="p">.</span><span class="n">setInputCloud</span> <span class="p">(</span><span class="n">points_with_normals_src</span><span class="p">);</span> <span class="c1">//设置输入点云（待变换的点云）</span>
+  <span class="n">reg</span><span class="p">.</span><span class="n">setInputTarget</span> <span class="p">(</span><span class="n">points_with_normals_tgt</span><span class="p">);</span> <span class="c1">//设置目标点云</span>
+	<span class="n">reg</span><span class="p">.</span><span class="n">setMaximumIterations</span> <span class="p">(</span><span class="mi">2</span><span class="p">);</span> <span class="c1">//设置内部优化的迭代次数</span>
+
+  <span class="c1">// Run the same optimization in a loop and visualize the results</span>
+  <span class="n">Eigen</span><span class="o">::</span><span class="n">Matrix4f</span> <span class="n">Ti</span> <span class="o">=</span> <span class="n">Eigen</span><span class="o">::</span><span class="n">Matrix4f</span><span class="o">::</span><span class="n">Identity</span> <span class="p">(),</span> <span class="n">prev</span><span class="p">,</span> <span class="n">targetToSource</span><span class="p">;</span>
+  <span class="n">PointCloudWithNormals</span><span class="o">::</span><span class="n">Ptr</span> <span class="n">reg_result</span> <span class="o">=</span> <span class="n">points_with_normals_src</span><span class="p">;</span> <span class="c1">//用于存储结果（坐标+法向量）</span>
+  
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">30</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="c1">//迭代</span>
+  <span class="p">{</span>
+    <span class="n">PCL_INFO</span> <span class="p">(</span><span class="s">&quot;Iteration Nr. %d.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span> <span class="c1">//命令行显示迭代的次数</span>
+    <span class="c1">//保存点云，用于可视化</span>
+    <span class="n">points_with_normals_src</span> <span class="o">=</span> <span class="n">reg_result</span><span class="p">;</span> <span class="c1">//</span>
+    <span class="c1">//估计</span>
+    <span class="c1">//reg.setInputSource (points_with_normals_src);</span>
+		<span class="n">reg</span><span class="p">.</span><span class="n">setInputCloud</span> <span class="p">(</span><span class="n">points_with_normals_src</span><span class="p">);</span> <span class="c1">//重新设置输入点云（待变换的点云），因为经过上一次迭代，已经发生变换了</span>
+    <span class="n">reg</span><span class="p">.</span><span class="n">align</span> <span class="p">(</span><span class="o">*</span><span class="n">reg_result</span><span class="p">);</span> <span class="c1">//对齐（配准）两个点云</span>
+		
+    <span class="n">Ti</span> <span class="o">=</span> <span class="n">reg</span><span class="p">.</span><span class="n">getFinalTransformation</span> <span class="p">()</span> <span class="o">*</span> <span class="n">Ti</span><span class="p">;</span> <span class="c1">//累积（每次迭代的）变换矩阵</span>
+		<span class="c1">//如果这次变换和上次变换的误差比阈值小，通过减小最大的对应点距离的方法来进一步细化</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">fabs</span> <span class="p">((</span><span class="n">reg</span><span class="p">.</span><span class="n">getLastIncrementalTransformation</span> <span class="p">()</span> <span class="o">-</span> <span class="n">prev</span><span class="p">).</span><span class="n">sum</span> <span class="p">())</span> <span class="o">&lt;</span> <span class="n">reg</span><span class="p">.</span><span class="n">getTransformationEpsilon</span> <span class="p">())</span>
+      <span class="n">reg</span><span class="p">.</span><span class="n">setMaxCorrespondenceDistance</span> <span class="p">(</span><span class="n">reg</span><span class="p">.</span><span class="n">getMaxCorrespondenceDistance</span> <span class="p">()</span> <span class="o">-</span> <span class="mf">0.001</span><span class="p">);</span> <span class="c1">//减小对应点之间的最大距离（上面设置过）</span>
+    <span class="n">prev</span> <span class="o">=</span> <span class="n">reg</span><span class="p">.</span><span class="n">getLastIncrementalTransformation</span> <span class="p">();</span> <span class="c1">//上一次变换的误差</span>
+    <span class="c1">//显示当前配准状态，在窗口的右视区，简单的显示源点云和目标点云</span>
+    <span class="n">showCloudsRight</span><span class="p">(</span><span class="n">points_with_normals_tgt</span><span class="p">,</span> <span class="n">points_with_normals_src</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="n">targetToSource</span> <span class="o">=</span> <span class="n">Ti</span><span class="p">.</span><span class="n">inverse</span><span class="p">();</span> <span class="c1">//计算从目标点云到源点云的变换矩阵</span>
+  <span class="n">pcl</span><span class="o">::</span><span class="n">transformPointCloud</span> <span class="p">(</span><span class="o">*</span><span class="n">cloud_tgt</span><span class="p">,</span> <span class="o">*</span><span class="n">output</span><span class="p">,</span> <span class="n">targetToSource</span><span class="p">);</span> <span class="c1">//将目标点云 变换回到 源点云帧</span>
+
+  <span class="n">p</span><span class="o">-&gt;</span><span class="n">removePointCloud</span> <span class="p">(</span><span class="s">&quot;source&quot;</span><span class="p">);</span> <span class="c1">//根据给定的ID，从屏幕中去除一个点云。参数是ID</span>
+  <span class="n">p</span><span class="o">-&gt;</span><span class="n">removePointCloud</span> <span class="p">(</span><span class="s">&quot;target&quot;</span><span class="p">);</span>
+  <span class="n">PointCloudColorHandlerCustom</span><span class="o">&lt;</span><span class="n">PointT</span><span class="o">&gt;</span> <span class="n">cloud_tgt_h</span> <span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span> <span class="c1">//设置点云显示颜色，下同</span>
+  <span class="n">PointCloudColorHandlerCustom</span><span class="o">&lt;</span><span class="n">PointT</span><span class="o">&gt;</span> <span class="n">cloud_src_h</span> <span class="p">(</span><span class="n">cloud_src</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="n">p</span><span class="o">-&gt;</span><span class="n">addPointCloud</span> <span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">cloud_tgt_h</span><span class="p">,</span> <span class="s">&quot;target&quot;</span><span class="p">,</span> <span class="n">vp_2</span><span class="p">);</span> <span class="c1">//添加点云数据，下同</span>
+  <span class="n">p</span><span class="o">-&gt;</span><span class="n">addPointCloud</span> <span class="p">(</span><span class="n">cloud_src</span><span class="p">,</span> <span class="n">cloud_src_h</span><span class="p">,</span> <span class="s">&quot;source&quot;</span><span class="p">,</span> <span class="n">vp_2</span><span class="p">);</span>
+
+	<span class="n">PCL_INFO</span> <span class="p">(</span><span class="s">&quot;Press q to continue the registration.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+  <span class="n">p</span><span class="o">-&gt;</span><span class="n">spin</span> <span class="p">();</span>
+
+  <span class="n">p</span><span class="o">-&gt;</span><span class="n">removePointCloud</span> <span class="p">(</span><span class="s">&quot;source&quot;</span><span class="p">);</span> 
+  <span class="n">p</span><span class="o">-&gt;</span><span class="n">removePointCloud</span> <span class="p">(</span><span class="s">&quot;target&quot;</span><span class="p">);</span>
+
+  <span class="c1">//add the source to the transformed target</span>
+  <span class="o">*</span><span class="n">output</span> <span class="o">+=</span> <span class="o">*</span><span class="n">cloud_src</span><span class="p">;</span> <span class="c1">// 拼接点云图（的点）点数数目是两个点云的点数和</span>
+  
+  <span class="n">final_transform</span> <span class="o">=</span> <span class="n">targetToSource</span><span class="p">;</span> <span class="c1">//最终的变换。目标点云到源点云的变换矩阵</span>
+ <span class="p">}</span>
+
+
+ <span class="c1">//****************  入口函数  ************************</span>
+<span class="c1">//主函数</span>
+<span class="kt">int</span> <span class="nf">main</span> <span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="c1">//读取数据</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">PCD</span><span class="p">,</span> <span class="n">Eigen</span><span class="o">::</span><span class="n">aligned_allocator</span><span class="o">&lt;</span><span class="n">PCD</span><span class="o">&gt;</span> <span class="o">&gt;</span> <span class="n">data</span><span class="p">;</span> <span class="c1">//模型</span>
+  <span class="n">loadData</span> <span class="p">(</span><span class="n">argc</span><span class="p">,</span> <span class="n">argv</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span> <span class="c1">//读取pcd文件数据，定义见上面</span>
+
+  <span class="c1">//检查用户数据</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">empty</span> <span class="p">())</span>
+  <span class="p">{</span>
+    <span class="n">PCL_ERROR</span> <span class="p">(</span><span class="s">&quot;Syntax is: %s &lt;source.pcd&gt; &lt;target.pcd&gt; [*]&quot;</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="c1">//语法</span>
+    <span class="n">PCL_ERROR</span> <span class="p">(</span><span class="s">&quot;[*] - multiple files can be added. The registration results of (i, i+1) will be registered against (i+2), etc&quot;</span><span class="p">);</span> <span class="c1">//可以使用多个文件</span>
+    <span class="k">return</span> <span class="p">(</span><span class="mi">-1</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="n">PCL_INFO</span> <span class="p">(</span><span class="s">&quot;Loaded %d datasets.&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">data</span><span class="p">.</span><span class="n">size</span> <span class="p">());</span> <span class="c1">//显示读取了多少个点云文件</span>
+  
+  <span class="c1">//创建一个 PCLVisualizer 对象</span>
+	<span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="n">pcl</span><span class="o">::</span><span class="n">visualization</span><span class="o">::</span><span class="n">PCLVisualizer</span> <span class="p">(</span><span class="n">argc</span><span class="p">,</span> <span class="n">argv</span><span class="p">,</span> <span class="s">&quot;Pairwise Incremental Registration example&quot;</span><span class="p">);</span> <span class="c1">//p是全局变量</span>
+  <span class="n">p</span><span class="o">-&gt;</span><span class="n">createViewPort</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">vp_1</span><span class="p">);</span> <span class="c1">//创建左视区</span>
+  <span class="n">p</span><span class="o">-&gt;</span><span class="n">createViewPort</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">vp_2</span><span class="p">);</span> <span class="c1">//创建右视区</span>
+
+	<span class="c1">//创建点云指针和变换矩阵</span>
+	<span class="n">PointCloud</span><span class="o">::</span><span class="n">Ptr</span> <span class="n">result</span> <span class="p">(</span><span class="k">new</span> <span class="n">PointCloud</span><span class="p">),</span> <span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">;</span> <span class="c1">//创建3个点云指针，分别用于结果，源点云和目标点云</span>
+  <span class="c1">//全局变换矩阵，单位矩阵，成对变换</span>
+	<span class="c1">//逗号表达式，先创建一个单位矩阵，然后将成对变换 赋给 全局变换</span>
+	<span class="n">Eigen</span><span class="o">::</span><span class="n">Matrix4f</span> <span class="n">GlobalTransform</span> <span class="o">=</span> <span class="n">Eigen</span><span class="o">::</span><span class="n">Matrix4f</span><span class="o">::</span><span class="n">Identity</span> <span class="p">(),</span> <span class="n">pairTransform</span><span class="p">;</span> 
+	
+  
+	<span class="c1">//遍历所有的点云文件</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">data</span><span class="p">.</span><span class="n">size</span> <span class="p">();</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">source</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="mi">-1</span><span class="p">].</span><span class="n">cloud</span><span class="p">;</span> <span class="c1">//源点云</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">cloud</span><span class="p">;</span> <span class="c1">//目标点云</span>
+    <span class="n">showCloudsLeft</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">);</span> <span class="c1">//在左视区，简单的显示源点云和目标点云</span>
+    <span class="n">PointCloud</span><span class="o">::</span><span class="n">Ptr</span> <span class="n">temp</span> <span class="p">(</span><span class="k">new</span> <span class="n">PointCloud</span><span class="p">);</span> <span class="c1">//创建临时点云指针</span>
+		<span class="c1">//显示正在配准的点云文件名和各自的点数</span>
+    <span class="n">PCL_INFO</span> <span class="p">(</span><span class="s">&quot;Aligning %s (%d points) with %s (%d points).</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="mi">-1</span><span class="p">].</span><span class="n">f_name</span><span class="p">.</span><span class="n">c_str</span> <span class="p">(),</span> <span class="n">source</span><span class="o">-&gt;</span><span class="n">points</span><span class="p">.</span><span class="n">size</span> <span class="p">(),</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">f_name</span><span class="p">.</span><span class="n">c_str</span> <span class="p">(),</span> <span class="n">target</span><span class="o">-&gt;</span><span class="n">points</span><span class="p">.</span><span class="n">size</span> <span class="p">());</span>
+    
+		<span class="c1">//********************************************************</span>
+		<span class="c1">//配准2个点云，函数定义见上面</span>
+		<span class="n">pairAlign</span> <span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">pairTransform</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+    <span class="c1">//将当前的一对点云数据，变换到全局变换中。</span>
+    <span class="n">pcl</span><span class="o">::</span><span class="n">transformPointCloud</span> <span class="p">(</span><span class="o">*</span><span class="n">temp</span><span class="p">,</span> <span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="n">GlobalTransform</span><span class="p">);</span>
+    <span class="c1">//更新全局变换</span>
+    <span class="n">GlobalTransform</span> <span class="o">=</span> <span class="n">GlobalTransform</span> <span class="o">*</span> <span class="n">pairTransform</span><span class="p">;</span>
+		<span class="c1">//********************************************************</span>
+
+		<span class="c1">// 保存成对的配准结果，变换到第一个点云帧</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">stringstream</span> <span class="n">ss</span><span class="p">;</span> <span class="c1">//这两句是生成文件名</span>
+    <span class="n">ss</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;.pcd&quot;</span><span class="p">;</span>
+    <span class="n">pcl</span><span class="o">::</span><span class="n">io</span><span class="o">::</span><span class="n">savePCDFile</span> <span class="p">(</span><span class="n">ss</span><span class="p">.</span><span class="n">str</span> <span class="p">(),</span> <span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span> <span class="c1">//保存成对的配准结果</span>
+
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>重新生成项目。</p></li>
+<li><p>到改项目的Debug目录下，按住Shift，同时点击鼠标右键，在当前窗口打开CMD窗口。</p></li>
+<li><p>在命令行中输入<code class="docutils literal notranslate"><span class="pre">pairwise_incremental_registration.exe</span> <span class="pre">capture0001.pcd</span> <span class="pre">capture0002.pcd</span> <span class="pre">capture0003.pcd</span> <span class="pre">capture0004.pcd</span> <span class="pre">capture0005.pcd</span></code>，执行程序。得到如下图所示的结果。</p></li>
+</ul>
+<img src="http://img.blog.csdn.net/20160331225106854" width = "900"  alt="结果图" /></section>
+<section id="id4">
+<h2>参考<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference external" href="http://pointclouds.org/documentation/tutorials/pairwise_incremental_registration.php#pairwise-incremental-registration">How to incrementally register pairs of clouds</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6.html" class="btn btn-neutral float-right" title="PCL系列——将点云数据写入PCD格式文件" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F.html" class="btn btn-neutral float-left" title="PCL系列——如何可视化深度图像" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; 版权所有 2019, 张学志.
+
+    </p>
+  </div>
+    
+    
+    
+    利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用了 
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    
+    由 <a href="https://readthedocs.org">Read the Docs</a>开发. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-XXXXXXX-1', 'auto');
+    
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>

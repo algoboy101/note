@@ -1,0 +1,1257 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>caffe安装系列——综述 &mdash; 张学志の博客 1.0 文档</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/translations.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="caffe安装系列——安装GCC4.7和G++4.7并降级" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85GCC4.7%E5%92%8CG%2B%2B4.7%E5%B9%B6%E9%99%8D%E7%BA%A7.html" />
+    <link rel="prev" title="Caffe" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> 张学志の博客
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">深度学习</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Caffe</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">caffe安装系列——综述</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">说明</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">环境</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">安装步骤</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">0.准备工作</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gcc4-7g-4-7">1.安装GCC4.7和G++4.7并降级</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#nvidia">2.安装NVIDIA显卡驱动</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cudacudnn">3.安装cuda和cudnn</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">安装步骤</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#python">6.安装Python相关依赖</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id6">7.安装caffe</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id7">总结</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id8">参考</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85GCC4.7%E5%92%8CG%2B%2B4.7%E5%B9%B6%E9%99%8D%E7%BA%A7.html">caffe安装系列——安装GCC4.7和G++4.7并降级</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85GCC4.7%E5%92%8CG%2B%2B4.7%E5%B9%B6%E9%99%8D%E7%BA%A7.html#id1">说明</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85GCC4.7%E5%92%8CG%2B%2B4.7%E5%B9%B6%E9%99%8D%E7%BA%A7.html#id2">环境</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85GCC4.7%E5%92%8CG%2B%2B4.7%E5%B9%B6%E9%99%8D%E7%BA%A7.html#id3">安装步骤</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85GCC4.7%E5%92%8CG%2B%2B4.7%E5%B9%B6%E9%99%8D%E7%BA%A7.html#gcc4-7g-4-7">安装GCC4.7和G++4.7并降级</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85NVIDIA%E6%98%BE%E5%8D%A1%E9%A9%B1%E5%8A%A8.html">caffe安装系列——安装NVIDIA显卡驱动</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85NVIDIA%E6%98%BE%E5%8D%A1%E9%A9%B1%E5%8A%A8.html#id1">说明</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85NVIDIA%E6%98%BE%E5%8D%A1%E9%A9%B1%E5%8A%A8.html#id2">环境</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85NVIDIA%E6%98%BE%E5%8D%A1%E9%A9%B1%E5%8A%A8.html#id3">安装步骤</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85NVIDIA%E6%98%BE%E5%8D%A1%E9%A9%B1%E5%8A%A8.html#id4">0.版本说明</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85NVIDIA%E6%98%BE%E5%8D%A1%E9%A9%B1%E5%8A%A8.html#apt-get">1.使用apt-get安装</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85NVIDIA%E6%98%BE%E5%8D%A1%E9%A9%B1%E5%8A%A8.html#id5">2.使用二进制安装包安装</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85cuda%E5%92%8Ccudnn.html">caffe安装系列——安装cuda和cudnn</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85cuda%E5%92%8Ccudnn.html#id1">说明</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85cuda%E5%92%8Ccudnn.html#id2">环境</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85cuda%E5%92%8Ccudnn.html#id3">安装步骤</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85cuda%E5%92%8Ccudnn.html#cuda">安装cuda</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85cuda%E5%92%8Ccudnn.html#cuda-samples">安装CUDA SAMPLES</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85cuda%E5%92%8Ccudnn.html#cudnn">安装cudnn</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85Matlab.html">caffe安装系列——安装Matlab</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85Matlab.html#id1">说明</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85Matlab.html#id2">环境</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85Matlab.html#id3">安装步骤</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85Matlab.html#matlab">1. 下载Matlab</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85Matlab.html#id4">2. 安装Matlab</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85Matlab.html#gccg">3.GCC和G++版本问题</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85Matlab.html#id5">4. 建立Matlab的快捷方式</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85Matlab.html#id6">检查</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85Matlab.html#id7">参考链接</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85OpenCV.html">caffe安装系列——安装OpenCV</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85OpenCV.html#id1">说明</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85OpenCV.html#id2">环境</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85OpenCV.html#id3">安装步骤</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85OpenCV.html#opencv">安装OpenCV</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85OpenCV.html#id4">判定OpenCV是否安装成功</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85OpenCV.html#id5">OpenCV安装过程中的错误</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85OpenCV.html#id6">参考</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85python%E4%BE%9D%E8%B5%96%E5%8C%85.html">caffe安装系列——安装python依赖包</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85python%E4%BE%9D%E8%B5%96%E5%8C%85.html#id1">说明</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85python%E4%BE%9D%E8%B5%96%E5%8C%85.html#id2">环境</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85python%E4%BE%9D%E8%B5%96%E5%8C%85.html#id3">安装步骤</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85python%E4%BE%9D%E8%B5%96%E5%8C%85.html#theano">安装theano依赖包</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85caffe.html">caffe安装系列——安装caffe</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85caffe.html#id1">说明</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85caffe.html#id2">环境</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85caffe.html#id3">安装步骤</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85caffe.html#google-logging-library-glog">安装Google Logging Library（glog）</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85caffe.html#id4">安装其它依赖</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85caffe.html#makefile-config">编辑Makefile.config文件</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85caffe.html#makefile">编辑Makefile文件</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85caffe.html#caffe-master">编译caffe-master</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85caffe.html#python">设置Python环境变量</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85caffe.html#mnist">使用MNIST数据集进行测试</a></li>
+<li class="toctree-l4"><a class="reference internal" href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85caffe.html#id5">总结</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../PCL/index.html">PCL</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E6%B3%8A%E6%9D%BE%E9%87%8D%E6%9E%84.html">PCL系列——三维重构之泊松重构</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E6%B3%8A%E6%9D%BE%E9%87%8D%E6%9E%84.html#id1">PCL系列</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E8%AF%BB%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——读入PCD格式文件操作</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——将点云数据写入PCD格式文件</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91/">PCL系列——拼接两个点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%EF%BC%88RangeImage%EF%BC%89%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9/">PCL系列——从深度图像（RangeImage）中提取NARF关键点</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F/">PCL系列——如何可视化深度图像</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/31/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86/">PCL系列——如何使用迭代最近点法（ICP）配准</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E9%80%90%E6%B8%90%E5%9C%B0%E9%85%8D%E5%87%86%E4%B8%80%E5%AF%B9%E7%82%B9%E4%BA%91/">PCL系列——如何逐渐地配准一对点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E6%B3%8A%E6%9D%BE%E9%87%8D%E6%9E%84/">PCL系列——三维重构之泊松重构</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E8%B4%AA%E5%A9%AA%E4%B8%89%E8%A7%92%E6%8A%95%E5%BD%B1%E7%AE%97%E6%B3%95/">PCL系列——三维重构之贪婪三角投影算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%8B%E6%96%B9%E4%BD%93%E7%AE%97%E6%B3%95/">PCL系列——三维重构之移动立方体算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2/">PCL系列——平面模型分割</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E6%B3%8A%E6%9D%BE%E9%87%8D%E6%9E%84.html#id2">说明</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E6%B3%8A%E6%9D%BE%E9%87%8D%E6%9E%84.html#id3">操作</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%8B%E6%96%B9%E4%BD%93%E7%AE%97%E6%B3%95.html">PCL系列——三维重构之移动立方体算法</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%8B%E6%96%B9%E4%BD%93%E7%AE%97%E6%B3%95.html#id1">PCL系列</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E8%AF%BB%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——读入PCD格式文件操作</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——将点云数据写入PCD格式文件</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91/">PCL系列——拼接两个点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%EF%BC%88RangeImage%EF%BC%89%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9/">PCL系列——从深度图像（RangeImage）中提取NARF关键点</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F/">PCL系列——如何可视化深度图像</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/31/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86/">PCL系列——如何使用迭代最近点法（ICP）配准</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E9%80%90%E6%B8%90%E5%9C%B0%E9%85%8D%E5%87%86%E4%B8%80%E5%AF%B9%E7%82%B9%E4%BA%91/">PCL系列——如何逐渐地配准一对点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E6%B3%8A%E6%9D%BE%E9%87%8D%E6%9E%84/">PCL系列——三维重构之泊松重构</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E8%B4%AA%E5%A9%AA%E4%B8%89%E8%A7%92%E6%8A%95%E5%BD%B1%E7%AE%97%E6%B3%95/">PCL系列——三维重构之贪婪三角投影算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%8B%E6%96%B9%E4%BD%93%E7%AE%97%E6%B3%95/">PCL系列——三维重构之移动立方体算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2/">PCL系列——平面模型分割</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%8B%E6%96%B9%E4%BD%93%E7%AE%97%E6%B3%95.html#id2">说明</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%8B%E6%96%B9%E4%BD%93%E7%AE%97%E6%B3%95.html#id3">操作</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E8%B4%AA%E5%A9%AA%E4%B8%89%E8%A7%92%E6%8A%95%E5%BD%B1%E7%AE%97%E6%B3%95.html">PCL系列——三维重构之贪婪三角投影算法</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E8%B4%AA%E5%A9%AA%E4%B8%89%E8%A7%92%E6%8A%95%E5%BD%B1%E7%AE%97%E6%B3%95.html#id1">PCL系列</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E8%AF%BB%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——读入PCD格式文件操作</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——将点云数据写入PCD格式文件</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91/">PCL系列——拼接两个点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%EF%BC%88RangeImage%EF%BC%89%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9/">PCL系列——从深度图像（RangeImage）中提取NARF关键点</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F/">PCL系列——如何可视化深度图像</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/31/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86/">PCL系列——如何使用迭代最近点法（ICP）配准</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E9%80%90%E6%B8%90%E5%9C%B0%E9%85%8D%E5%87%86%E4%B8%80%E5%AF%B9%E7%82%B9%E4%BA%91/">PCL系列——如何逐渐地配准一对点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E6%B3%8A%E6%9D%BE%E9%87%8D%E6%9E%84/">PCL系列——三维重构之泊松重构</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E8%B4%AA%E5%A9%AA%E4%B8%89%E8%A7%92%E6%8A%95%E5%BD%B1%E7%AE%97%E6%B3%95/">PCL系列——三维重构之贪婪三角投影算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%8B%E6%96%B9%E4%BD%93%E7%AE%97%E6%B3%95/">PCL系列——三维重构之移动立方体算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2/">PCL系列——平面模型分割</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E8%B4%AA%E5%A9%AA%E4%B8%89%E8%A7%92%E6%8A%95%E5%BD%B1%E7%AE%97%E6%B3%95.html#id2">说明</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E8%B4%AA%E5%A9%AA%E4%B8%89%E8%A7%92%E6%8A%95%E5%BD%B1%E7%AE%97%E6%B3%95.html#id3">操作</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%28RangeImage%29%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9.html">PCL系列——从深度图像(RangeImage)中提取NARF关键点</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%28RangeImage%29%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9.html#pcl">PCL系列</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://blog.csdn.net/xuezhisdc/article/details/51012300">PCL系列——读入PCD格式文件操作</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://blog.csdn.net/xuezhisdc/article/details/51012463">PCL系列——将点云数据写入PCD格式文件</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://blog.csdn.net/xuezhisdc/article/details/51014388">PCL系列——拼接两个点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://blog.csdn.net/xuezhisdc/article/details/51018872">PCL系列——从深度图像(RangeImage)中提取NARF关键点</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://blog.csdn.net/xuezhisdc/article/details/51019461">PCL系列——如何可视化深度图像</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://blog.csdn.net/xuezhisdc/article/details/51023251">PCL系列——如何使用迭代最近点法（ICP）配准</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://blog.csdn.net/xuezhisdc/article/details/51030943">PCL系列——如何逐渐地配准一对点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://blog.csdn.net/xuezhisdc/article/details/51034189">PCL系列——三维重构之泊松重构</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://blog.csdn.net/xuezhisdc/article/details/51034272">PCL系列——三维重构之贪婪三角投影算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://blog.csdn.net/xuezhisdc/article/details/51034359">PCL系列——三维重构之移动立方体算法</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%28RangeImage%29%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9.html#id1">说明</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%28RangeImage%29%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9.html#id2">操作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%28RangeImage%29%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9.html#id3">参考</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://pointclouds.org/documentation/tutorials/narf_keypoint_extraction.php#narf-keypoint-extraction">How to extract NARF keypoint from a range image</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86.html">PCL系列——如何使用迭代最近点法（ICP）配准</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86.html#pcl">PCL系列</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E8%AF%BB%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——读入PCD格式文件操作</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——将点云数据写入PCD格式文件</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91/">PCL系列——拼接两个点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%EF%BC%88RangeImage%EF%BC%89%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9/">PCL系列——从深度图像（RangeImage）中提取NARF关键点</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F/">PCL系列——如何可视化深度图像</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/31/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86/">PCL系列——如何使用迭代最近点法（ICP）配准</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E9%80%90%E6%B8%90%E5%9C%B0%E9%85%8D%E5%87%86%E4%B8%80%E5%AF%B9%E7%82%B9%E4%BA%91/">PCL系列——如何逐渐地配准一对点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E6%B3%8A%E6%9D%BE%E9%87%8D%E6%9E%84/">PCL系列——三维重构之泊松重构</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E8%B4%AA%E5%A9%AA%E4%B8%89%E8%A7%92%E6%8A%95%E5%BD%B1%E7%AE%97%E6%B3%95/">PCL系列——三维重构之贪婪三角投影算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%8B%E6%96%B9%E4%BD%93%E7%AE%97%E6%B3%95/">PCL系列——三维重构之移动立方体算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2/">PCL系列——平面模型分割</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86.html#id1">说明</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86.html#id2">操作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86.html#id3">参考</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://pointclouds.org/documentation/tutorials/iterative_closest_point.php#iterative-closest-point">How to use iterative closest point</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F.html">PCL系列——如何可视化深度图像</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F.html#id1">PCL系列</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E8%AF%BB%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——读入PCD格式文件操作</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——将点云数据写入PCD格式文件</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91/">PCL系列——拼接两个点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%EF%BC%88RangeImage%EF%BC%89%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9/">PCL系列——从深度图像（RangeImage）中提取NARF关键点</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F/">PCL系列——如何可视化深度图像</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/31/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86/">PCL系列——如何使用迭代最近点法（ICP）配准</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E9%80%90%E6%B8%90%E5%9C%B0%E9%85%8D%E5%87%86%E4%B8%80%E5%AF%B9%E7%82%B9%E4%BA%91/">PCL系列——如何逐渐地配准一对点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E6%B3%8A%E6%9D%BE%E9%87%8D%E6%9E%84/">PCL系列——三维重构之泊松重构</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E8%B4%AA%E5%A9%AA%E4%B8%89%E8%A7%92%E6%8A%95%E5%BD%B1%E7%AE%97%E6%B3%95/">PCL系列——三维重构之贪婪三角投影算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%8B%E6%96%B9%E4%BD%93%E7%AE%97%E6%B3%95/">PCL系列——三维重构之移动立方体算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2/">PCL系列——平面模型分割</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F.html#id2">说明</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F.html#id3">操作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F.html#id4">参考</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://pointclouds.org/documentation/tutorials/range_image_visualization.php#range-image-visualization">How to visualize a range image</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E9%80%90%E6%B8%90%E5%9C%B0%E9%85%8D%E5%87%86%E4%B8%80%E5%AF%B9%E7%82%B9%E4%BA%91.html">PCL系列——如何逐渐地配准一对点云</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E9%80%90%E6%B8%90%E5%9C%B0%E9%85%8D%E5%87%86%E4%B8%80%E5%AF%B9%E7%82%B9%E4%BA%91.html#id1">PCL系列</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E8%AF%BB%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——读入PCD格式文件操作</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——将点云数据写入PCD格式文件</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91/">PCL系列——拼接两个点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%EF%BC%88RangeImage%EF%BC%89%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9/">PCL系列——从深度图像（RangeImage）中提取NARF关键点</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F/">PCL系列——如何可视化深度图像</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/31/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86/">PCL系列——如何使用迭代最近点法（ICP）配准</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E9%80%90%E6%B8%90%E5%9C%B0%E9%85%8D%E5%87%86%E4%B8%80%E5%AF%B9%E7%82%B9%E4%BA%91/">PCL系列——如何逐渐地配准一对点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E6%B3%8A%E6%9D%BE%E9%87%8D%E6%9E%84/">PCL系列——三维重构之泊松重构</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E8%B4%AA%E5%A9%AA%E4%B8%89%E8%A7%92%E6%8A%95%E5%BD%B1%E7%AE%97%E6%B3%95/">PCL系列——三维重构之贪婪三角投影算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%8B%E6%96%B9%E4%BD%93%E7%AE%97%E6%B3%95/">PCL系列——三维重构之移动立方体算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2/">PCL系列——平面模型分割</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E9%80%90%E6%B8%90%E5%9C%B0%E9%85%8D%E5%87%86%E4%B8%80%E5%AF%B9%E7%82%B9%E4%BA%91.html#id2">说明</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E9%80%90%E6%B8%90%E5%9C%B0%E9%85%8D%E5%87%86%E4%B8%80%E5%AF%B9%E7%82%B9%E4%BA%91.html#id3">操作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E9%80%90%E6%B8%90%E5%9C%B0%E9%85%8D%E5%87%86%E4%B8%80%E5%AF%B9%E7%82%B9%E4%BA%91.html#id4">参考</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://pointclouds.org/documentation/tutorials/pairwise_incremental_registration.php#pairwise-incremental-registration">How to incrementally register pairs of clouds</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6.html">PCL系列——将点云数据写入PCD格式文件</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6.html#pcl">PCL系列</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E8%AF%BB%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——读入PCD格式文件操作</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——将点云数据写入PCD格式文件</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91/">PCL系列——拼接两个点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%EF%BC%88RangeImage%EF%BC%89%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9/">PCL系列——从深度图像（RangeImage）中提取NARF关键点</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F/">PCL系列——如何可视化深度图像</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/31/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86/">PCL系列——如何使用迭代最近点法（ICP）配准</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E9%80%90%E6%B8%90%E5%9C%B0%E9%85%8D%E5%87%86%E4%B8%80%E5%AF%B9%E7%82%B9%E4%BA%91/">PCL系列——如何逐渐地配准一对点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E6%B3%8A%E6%9D%BE%E9%87%8D%E6%9E%84/">PCL系列——三维重构之泊松重构</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E8%B4%AA%E5%A9%AA%E4%B8%89%E8%A7%92%E6%8A%95%E5%BD%B1%E7%AE%97%E6%B3%95/">PCL系列——三维重构之贪婪三角投影算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%8B%E6%96%B9%E4%BD%93%E7%AE%97%E6%B3%95/">PCL系列——三维重构之移动立方体算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2/">PCL系列——平面模型分割</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6.html#id1">操作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6.html#id2">参考</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://pointclouds.org/documentation/tutorials/writing_pcd.php#writing-pcd">Writing Point Cloud data to PCD files</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2.html">PCL系列——平面模型分割</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2.html#id1">PCL系列</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E8%AF%BB%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——读入PCD格式文件操作</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——将点云数据写入PCD格式文件</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91/">PCL系列——拼接两个点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%EF%BC%88RangeImage%EF%BC%89%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9/">PCL系列——从深度图像（RangeImage）中提取NARF关键点</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F/">PCL系列——如何可视化深度图像</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/31/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86/">PCL系列——如何使用迭代最近点法（ICP）配准</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E9%80%90%E6%B8%90%E5%9C%B0%E9%85%8D%E5%87%86%E4%B8%80%E5%AF%B9%E7%82%B9%E4%BA%91/">PCL系列——如何逐渐地配准一对点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E6%B3%8A%E6%9D%BE%E9%87%8D%E6%9E%84/">PCL系列——三维重构之泊松重构</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E8%B4%AA%E5%A9%AA%E4%B8%89%E8%A7%92%E6%8A%95%E5%BD%B1%E7%AE%97%E6%B3%95/">PCL系列——三维重构之贪婪三角投影算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%8B%E6%96%B9%E4%BD%93%E7%AE%97%E6%B3%95/">PCL系列——三维重构之移动立方体算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2/">PCL系列——平面模型分割</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2.html#id2">说明</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2.html#id3">代码</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2.html#id4">运行结果</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2.html#id5">参考</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91.html">PCL系列——拼接两个点云</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91.html#id1">PCL系列</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E8%AF%BB%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——读入PCD格式文件操作</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——将点云数据写入PCD格式文件</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91/">PCL系列——拼接两个点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%EF%BC%88RangeImage%EF%BC%89%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9/">PCL系列——从深度图像（RangeImage）中提取NARF关键点</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F/">PCL系列——如何可视化深度图像</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/31/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86/">PCL系列——如何使用迭代最近点法（ICP）配准</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E9%80%90%E6%B8%90%E5%9C%B0%E9%85%8D%E5%87%86%E4%B8%80%E5%AF%B9%E7%82%B9%E4%BA%91/">PCL系列——如何逐渐地配准一对点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E6%B3%8A%E6%9D%BE%E9%87%8D%E6%9E%84/">PCL系列——三维重构之泊松重构</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E8%B4%AA%E5%A9%AA%E4%B8%89%E8%A7%92%E6%8A%95%E5%BD%B1%E7%AE%97%E6%B3%95/">PCL系列——三维重构之贪婪三角投影算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%8B%E6%96%B9%E4%BD%93%E7%AE%97%E6%B3%95/">PCL系列——三维重构之移动立方体算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2/">PCL系列——平面模型分割</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91.html#id2">说明</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91.html#id3">操作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91.html#id4">参考</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://pointclouds.org/documentation/tutorials/concatenate_clouds.php#concatenate-clouds">Concatenate the points of two Point Clouds</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E8%AF%BB%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6.html">PCL系列——读入PCD格式文件</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E8%AF%BB%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6.html#pcl">PCL系列</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E8%AF%BB%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——读入PCD格式文件操作</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B0%86%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/">PCL系列——将点云数据写入PCD格式文件</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E6%8B%BC%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%82%B9%E4%BA%91/">PCL系列——拼接两个点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BB%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F%EF%BC%88RangeImage%EF%BC%89%E4%B8%AD%E6%8F%90%E5%8F%96NARF%E5%85%B3%E9%94%AE%E7%82%B9/">PCL系列——从深度图像（RangeImage）中提取NARF关键点</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/30/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E5%8F%AF%E8%A7%86%E5%8C%96%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%83%8F/">PCL系列——如何可视化深度图像</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/03/31/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E6%9C%80%E8%BF%91%E7%82%B9%E6%B3%95%EF%BC%88ICP%EF%BC%89%E9%85%8D%E5%87%86/">PCL系列——如何使用迭代最近点法（ICP）配准</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E9%80%90%E6%B8%90%E5%9C%B0%E9%85%8D%E5%87%86%E4%B8%80%E5%AF%B9%E7%82%B9%E4%BA%91/">PCL系列——如何逐渐地配准一对点云</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E6%B3%8A%E6%9D%BE%E9%87%8D%E6%9E%84/">PCL系列——三维重构之泊松重构</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E8%B4%AA%E5%A9%AA%E4%B8%89%E8%A7%92%E6%8A%95%E5%BD%B1%E7%AE%97%E6%B3%95/">PCL系列——三维重构之贪婪三角投影算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/01/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%B8%89%E7%BB%B4%E9%87%8D%E6%9E%84%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%8B%E6%96%B9%E4%BD%93%E7%AE%97%E6%B3%95/">PCL系列——三维重构之移动立方体算法</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://zhangxuezhi.com/2016/04/20/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%B9%B3%E9%9D%A2%E6%A8%A1%E5%9E%8B%E5%88%86%E5%89%B2/">PCL系列——平面模型分割</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E8%AF%BB%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6.html#id1">操作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PCL/PCL%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E8%AF%BB%E5%85%A5PCD%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6.html#id2">参考</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://pointclouds.org/documentation/tutorials/reading_pcd.php#reading-pcd">Reading Point Cloud data from PCD files</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../Linux/index.html">Linux</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%E4%B9%8Bngrok.html">内网穿透之ngrok</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%E4%B9%8Bngrok.html#id1">问题</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%E4%B9%8Bngrok.html#id2">解决方法</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%E4%B9%8Bngrok.html#id3">第一步，注册账号，开通隧道</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%E4%B9%8Bngrok.html#id4">第二步，下载客户端</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%E4%B9%8Bngrok.html#id5">第三步，安装客户端</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%E4%B9%8Bngrok.html#id6">第四步，启动客户端</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%E4%B9%8Bngrok.html#id7">第五步，测试</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%E4%B9%8Bngrok.html#id8">参考</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/%E5%8F%8C%E7%B3%BB%E7%BB%9F%28Linux%29%E6%97%B6%E9%97%B4%E4%B8%8D%E4%B8%80%E8%87%B4%E9%97%AE%E9%A2%98.html">双系统(Linux)时间不一致问题</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/%E5%8F%8C%E7%B3%BB%E7%BB%9F%28Linux%29%E6%97%B6%E9%97%B4%E4%B8%8D%E4%B8%80%E8%87%B4%E9%97%AE%E9%A2%98.html#id1">解决双系统时间不一致问题</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/%E5%8F%8C%E7%B3%BB%E7%BB%9F%28Linux%29%E6%97%B6%E9%97%B4%E4%B8%8D%E4%B8%80%E8%87%B4%E9%97%AE%E9%A2%98.html#id2">问题描述</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/%E5%8F%8C%E7%B3%BB%E7%BB%9F%28Linux%29%E6%97%B6%E9%97%B4%E4%B8%8D%E4%B8%80%E8%87%B4%E9%97%AE%E9%A2%98.html#id3">问题分析</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/%E5%8F%8C%E7%B3%BB%E7%BB%9F%28Linux%29%E6%97%B6%E9%97%B4%E4%B8%8D%E4%B8%80%E8%87%B4%E9%97%AE%E9%A2%98.html#id4">问题解决</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/%E5%8F%8C%E7%B3%BB%E7%BB%9F%28Linux%29%E6%97%B6%E9%97%B4%E4%B8%8D%E4%B8%80%E8%87%B4%E9%97%AE%E9%A2%98.html#centos">CentOS时间同步问题</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/%E5%8F%8C%E7%B3%BB%E7%BB%9F%28Linux%29%E6%97%B6%E9%97%B4%E4%B8%8D%E4%B8%80%E8%87%B4%E9%97%AE%E9%A2%98.html#id5">编辑时间配置文件</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/%E5%8F%8C%E7%B3%BB%E7%BB%9F%28Linux%29%E6%97%B6%E9%97%B4%E4%B8%8D%E4%B8%80%E8%87%B4%E9%97%AE%E9%A2%98.html#id6">设置为上海时区</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/%E5%8F%8C%E7%B3%BB%E7%BB%9F%28Linux%29%E6%97%B6%E9%97%B4%E4%B8%8D%E4%B8%80%E8%87%B4%E9%97%AE%E9%A2%98.html#id7">对准时间</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/%E5%8F%8C%E7%B3%BB%E7%BB%9F%28Linux%29%E6%97%B6%E9%97%B4%E4%B8%8D%E4%B8%80%E8%87%B4%E9%97%AE%E9%A2%98.html#id8">设置硬件时间和系统时间一致并校准</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/%E5%8F%8C%E7%B3%BB%E7%BB%9F%28Linux%29%E6%97%B6%E9%97%B4%E4%B8%8D%E4%B8%80%E8%87%B4%E9%97%AE%E9%A2%98.html#id9">参考</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html">Linux学习笔记</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html#id1">终端</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html#id2">终端和控制台</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html#id3">终端的本质</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html#id4">终端模拟器</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html#virtual-consoles">终端的6个Virtual consoles</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html#shell">Shell</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html#id5">历史命令</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html#id6">获取帮助</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html#id7">一些命令</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html#id8">Linux用户管理</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html#id9">查看用户</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html#id10">文件类型</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html#id11">文件权限</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/Linux%E4%B8%8B%E5%AE%89%E8%A3%85Eclipse.html">Linux下安装Eclipse</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E4%B8%8B%E5%AE%89%E8%A3%85Eclipse.html#id1">前提</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E4%B8%8B%E5%AE%89%E8%A3%85Eclipse.html#id2">下载安装包</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E4%B8%8B%E5%AE%89%E8%A3%85Eclipse.html#id3">复制文件</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E4%B8%8B%E5%AE%89%E8%A3%85Eclipse.html#id4">制作快捷方式</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E4%B8%8B%E5%AE%89%E8%A3%85Eclipse.html#id5">错误分析</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E4%B8%8B%E5%AE%89%E8%A3%85Eclipse.html#id6">参考</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://jingyan.baidu.com/article/86fae346b696633c49121a30.html">ubuntu下搭建JAVA开发环境</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://www.cnblogs.com/jerome-rong/archive/2013/02/19/2916608.html">A Java Runtime Environment (JRE) or Java Development Kit (JDK) must be avail</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/Linux%E7%BB%88%E7%AB%AF%E6%8F%90%E7%A4%BA%E7%AC%A6%E6%98%BE%E7%A4%BA%E9%A2%9C%E8%89%B2.html">Linux终端提示符显示颜色</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E7%BB%88%E7%AB%AF%E6%8F%90%E7%A4%BA%E7%AC%A6%E6%98%BE%E7%A4%BA%E9%A2%9C%E8%89%B2.html#id1">用法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E7%BB%88%E7%AB%AF%E6%8F%90%E7%A4%BA%E7%AC%A6%E6%98%BE%E7%A4%BA%E9%A2%9C%E8%89%B2.html#id2">参考</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.linuxidc.com/Linux/2014-10/108195.htm">Linux修改Shell命令提示符及颜色</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://www.centoscn.com/CentOS/2013/0418/321.html">修改Linux/Centos6终端命令提示符颜色</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/Linux%E5%88%A4%E6%96%AD%E6%96%87%E4%BB%B6%E5%92%8C%E6%96%87%E4%BB%B6%E5%A4%B9%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8.html">Linux判断文件和文件夹是否存在</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94adduser.html">Linux命令——adduser</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94adduser.html#adduser">adduser</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94adduser.html#useradd">useradd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94adduser.html#id1">参考网址</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.lx138.com/">Linux命令查询网站</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://man.linuxde.net/">Linux命令大全</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://baidu.com/">baidu</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://google.com.hk">Google</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94alias.html">Linux命令——alias</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94alias.html#alias">alias</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94alias.html#id1">参考网址</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.lx138.com/">Linux命令查询网站</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://man.linuxde.net/">Linux命令大全</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://baidu.com/">baidu</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://google.com.hk">Google</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94awk.html">Linux命令——awk</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94awk.html#awk">awk</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94awk.html#id1">参考网址</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.lx138.com/">Linux命令查询网站</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://man.linuxde.net/">Linux命令大全</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://baidu.com/">baidu</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://google.com.hk">Google</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94diff.html">Linux命令——diff</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94diff.html#diff">diff</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94diff.html#id1">参考网址</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.lx138.com/">Linux命令查询网站</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://man.linuxde.net/">Linux命令大全</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://baidu.com/">baidu</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://google.com.hk">Google</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94find.html">Linux命令——find</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94find.html#find">find</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94find.html#id1">参考网址</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.lx138.com/">Linux命令查询网站</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://man.linuxde.net/">Linux命令大全</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://baidu.com/">baidu</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://google.com.hk">Google</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94unalias.html">Linux命令——unalias</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94unalias.html#unalias">unalias</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94unalias.html#id1">参考网址</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.lx138.com/">Linux命令查询网站</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://man.linuxde.net/">Linux命令大全</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://baidu.com/">baidu</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://google.com.hk">Google</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94uname.html">Linux命令——uname</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94uname.html#uname">uname</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94uname.html#id1">参考网址</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.lx138.com/">Linux命令查询网站</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://man.linuxde.net/">Linux命令大全</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://baidu.com/">baidu</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://google.com.hk">Google</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94useradd.html">Linux命令——useradd</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94useradd.html#useradd">useradd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94useradd.html#id1">参考网址</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.lx138.com/">Linux命令查询网站</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://man.linuxde.net/">Linux命令大全</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://baidu.com/">baidu</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://google.com.hk">Google</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94userdel.html">Linux命令——userdel</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94userdel.html#userdel">userdel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94userdel.html#id1">参考网址</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.lx138.com/">Linux命令查询网站</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://man.linuxde.net/">Linux命令大全</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://baidu.com/">baidu</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://google.com.hk">Google</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94visudo.html">Linux命令——visudo</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94visudo.html#visudo">visudo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94visudo.html#id1">参考网址</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.lx138.com/">Linux命令查询网站</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://man.linuxde.net/">Linux命令大全</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://baidu.com/">baidu</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://google.com.hk">Google</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94whoami.html">Linux命令——whoami</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94whoami.html#whoami">whoami</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94whoami.html#id1">参考网址</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.lx138.com/">Linux命令查询网站</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://man.linuxde.net/">Linux命令大全</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://baidu.com/">baidu</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://google.com.hk">Google</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94who.html">Linux命令——who</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94who.html#who">who</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94who.html#id1">参考网址</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.lx138.com/">Linux命令查询网站</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://man.linuxde.net/">Linux命令大全</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://baidu.com/">baidu</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://google.com.hk">Google</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94w.html">Linux命令——w</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94w.html#w">w</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Linux%E5%91%BD%E4%BB%A4%E2%80%94%E2%80%94w.html#id1">参考网址</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.lx138.com/">Linux命令查询网站</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://man.linuxde.net/">Linux命令大全</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://baidu.com/">baidu</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://google.com.hk">Google</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/Ubuntu%2014.04%2064bit%20%E5%AE%89%E8%A3%8532%E4%BD%8D%E5%85%BC%E5%AE%B9%E5%8C%85.html">Ubuntu 14.04 64bit 安装32位兼容包</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu%2014.04%2064bit%20%E5%AE%89%E8%A3%8532%E4%BD%8D%E5%85%BC%E5%AE%B9%E5%8C%85.html#id1">问题描述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu%2014.04%2064bit%20%E5%AE%89%E8%A3%8532%E4%BD%8D%E5%85%BC%E5%AE%B9%E5%8C%85.html#id2">安装过程</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu%2014.04%2064bit%20%E5%AE%89%E8%A3%8532%E4%BD%8D%E5%85%BC%E5%AE%B9%E5%8C%85.html#id3">参考</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.oschina.net/question/237198_146122">ubuntu 14.04 64位 怎么安装 32位 支持库啊？</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://www.oschina.net/question/1470892_151825">Ubuntu14.04如何安装32位兼容库,即ia32-libs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html">Ubuntu14.04安装Theano详细教程</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id1">环境</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id2">相关库简介</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id3">相关库的关系</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id4">相关库的安装顺序</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#numpyscipy">检查numpy和scipy是否通过测试</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id5">卸载numpy和scipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id6">安装各种包</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id7">安装numpy和scipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id8">安装线性计算库、numPy和sciPy的编译方法（推荐）</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#openblas">编译安装OpenBlas</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#numpy">安装numPy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#scipy">安装sciPy</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id9">安装其它库</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#theano">安装Theano</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu14.04%E5%AE%89%E8%A3%85Theano%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id10">引用</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/Ubuntu%20Server%2014.04%E5%AE%89%E8%A3%85Gnome%E6%A1%8C%E9%9D%A2%E7%8E%AF%E5%A2%83.html">Ubuntu Server 14.04安装Gnome桌面环境</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu%20Server%2014.04%E5%AE%89%E8%A3%85Gnome%E6%A1%8C%E9%9D%A2%E7%8E%AF%E5%A2%83.html#id1">操作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu%20Server%2014.04%E5%AE%89%E8%A3%85Gnome%E6%A1%8C%E9%9D%A2%E7%8E%AF%E5%A2%83.html#id2">参考：</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/Ubuntu%20Server%20%E6%B7%BB%E5%8A%A0%E3%80%81%E5%88%A0%E9%99%A4%E5%92%8C%E4%BF%AE%E6%94%B9%E7%94%A8%E6%88%B7.html">Ubuntu Server 添加、删除和修改用户</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu%20Server%20%E6%B7%BB%E5%8A%A0%E3%80%81%E5%88%A0%E9%99%A4%E5%92%8C%E4%BF%AE%E6%94%B9%E7%94%A8%E6%88%B7.html#id1">添加用户</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu%20Server%20%E6%B7%BB%E5%8A%A0%E3%80%81%E5%88%A0%E9%99%A4%E5%92%8C%E4%BF%AE%E6%94%B9%E7%94%A8%E6%88%B7.html#id2">修改密码</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu%20Server%20%E6%B7%BB%E5%8A%A0%E3%80%81%E5%88%A0%E9%99%A4%E5%92%8C%E4%BF%AE%E6%94%B9%E7%94%A8%E6%88%B7.html#id3">删除用户</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu%20Server%20%E6%B7%BB%E5%8A%A0%E3%80%81%E5%88%A0%E9%99%A4%E5%92%8C%E4%BF%AE%E6%94%B9%E7%94%A8%E6%88%B7.html#id4">添加超级用户权限</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html">ubuntu中apt-get安装与默认路径</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html#apt-get">一、apt-get 安装</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html#dpkg-i">dpkg -i</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html#dpkg-c">dpkg -c</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html#id1">dpkg -I</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html#dpkg-r">dpkg -r</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html#dpkg-p">dpkg -P</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html#dpkg-l">dpkg -L</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html#dpkg-s">dpkg -s</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html#dpkg-reconfigure">dpkg-reconfigure</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html#id2">二、软件安装后相关文件位置</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html#id3">下载的软件存放位置</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html#id4">安装后软件默认位置</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html#id5">可执行文件位置</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html#id6">配置文件位置</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/ubuntu%E4%B8%ADapt-get%E5%AE%89%E8%A3%85%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84.html#lib">lib文件位置</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/Ubuntu%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html">Ubuntu使用过程中遇到的问题</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html#id1">打开终端的方法</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html#id2">1. 快捷键</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html#dash">2. Dash主页图标</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html#id3">打开Dash的快捷键</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html#path">将./添加到PATH</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html#id4">目的</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html#id5">1. 临时方法</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html#environment">2. 修改environment文件</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html#bashrc">3. 修改～/.bashrc 文件</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html#profile">4. 修改profile 文件</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html#id6">安装软件<strong>源码</strong>的步骤</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html#vim">vim不显色的问题</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html#id7">vim不能正常使用方向键与退格键的问题</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html#id8">如何是配置立即生效</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Chrome.html">Ubuntu-安装-Chrome</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Chrome.html#chrome">一、下载Chrome的安装包</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Chrome.html#id1">二、安装Chrome</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Chrome.html#id2">三、修复安装错误</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Chrome.html#id3">四、参考文章：</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html">Ubuntu-安装-cuda7.0-单显卡-超详细教程</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id1">一、说明</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id2">二、准备</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id3">1. 更新操作系统</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#cuda7-0">2. 下载cuda7.0</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#nvidia">3. 下载NVIDIA显卡驱动</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id4">三、验证系统是否符合要求</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#cuda">1. 验证显卡是否支持cuda</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id5">2. 查看系统类型</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id6">四、安装NVIDIA显卡驱动</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#tty1">1. 切换到tty1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id7">2. 关闭显示器管理器</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id8">3. 禁用旧的显卡驱动</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id9">4. 安装新的驱动</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id10">5. 检验驱动是否安装成功</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id11">五、安装cuda</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id12">1. 安装依赖库</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id13">2. 运行cuda安装命令</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id14">3. 配置环境变量</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id15">4. 检验环境是否设置好</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id16">5.安装其他一些辅助库</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#cuda-samples">六、安装CUDA SAMPLES</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#nvcc">1. 验证nvcc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#make-cuda-samples">2. make cuda samples</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#cudnn">七、安装cuDNN</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id17">1. 下载cuDNN</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#cudnne">2. 安装cuDNNE</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-cuda7.0-%E5%8D%95%E6%98%BE%E5%8D%A1-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id18">八、参考文章</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Python%E5%8C%85.html">Ubuntu-安装-Python包</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Python%E5%8C%85.html#apt-get">apt-get安装示例</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Python%E5%8C%85.html#pip">pip安装示例</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Shadowsocks.html">Ubuntu-安装-Shadowsocks</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Shadowsocks.html#id1">系统环境</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Shadowsocks.html#id2">安装依赖关系</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Shadowsocks.html#shadowsocks">找到shadowsocks的安装位置</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Shadowsocks.html#id3">新建并修改配置文件</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Shadowsocks.html#id4">运行shadowsocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Shadowsocks.html#id5">开机自动启动</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-Shadowsocks.html#switchysharp">配置SwitchySharp</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html">Ubuntu-安装-theano+caffe-超详细教程</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id1">一、说明</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#theano">二、安装Theano</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id2">1. 安装各种包</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#numpyscipy">2. 安装numpy和scipy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id3">3. 安装Theano</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#pycuda">4. 安装pyCUDA</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#cuda-ndarray-cu">5. 解决cuda_ndarray.cu错误</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id4">6. 配置Theano</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#theanogpu">7. 测试Theano是否在使用GPU</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id5">Theano相关资料</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#opencv">安装OpenCV</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id6">下载OpenCV</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id7">安装其它依赖项</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#glog">安装glog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#caffe">安装caffe</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id8">下载caffe</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#makefile-config">编辑Makefile.config</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#python">配置Python相关选项</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#matlab">安装Matlab</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-theano%2Bcaffe-%E8%B6%85%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id9">参考文章</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://blog.csdn.net/xuezhisdc/article/details/47065475">Ubuntu14.04安装Theano详细教程</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://caffe.berkeleyvision.org/installation.html">caffe官方安装教程</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://www.cnblogs.com/platero/p/3993877.html">Caffe + Ubuntu 14.04 64bit + CUDA 6.5 配置说明</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://www.linuxidc.com/Linux/2015-07/120449.htm">Caffe在Ubuntu 14.04 64bit 下的安装</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://seraphli.insecterswar.com/archives/category/dev/code">Ubuntu Theano CUDA</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://blog.csdn.net/sysuwuhongpeng/article/details/45485719">Unsupported gpu architecture</a></li>
+<li class="toctree-l4"><a class="reference external" href="https://ouxinyu.github.io/Blogs/20140723001.html">Caffe + Ubuntu 15.04 + CUDA 7.0 新手安装配置指南(推荐)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-%E6%90%9C%E7%8B%97%E8%BE%93%E5%85%A5%E6%B3%95-%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html">Ubuntu-安装-搜狗输入法-详细教程</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-%E6%90%9C%E7%8B%97%E8%BE%93%E5%85%A5%E6%B3%95-%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#deb">下载deb安装包</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-%E6%90%9C%E7%8B%97%E8%BE%93%E5%85%A5%E6%B3%95-%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#fcitx">安装fcitx</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-%E6%90%9C%E7%8B%97%E8%BE%93%E5%85%A5%E6%B3%95-%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id1">安装搜狗输入法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-%E6%90%9C%E7%8B%97%E8%BE%93%E5%85%A5%E6%B3%95-%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id2">配置输入方法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-%E6%90%9C%E7%8B%97%E8%BE%93%E5%85%A5%E6%B3%95-%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id3">重启</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-%E6%90%9C%E7%8B%97%E8%BE%93%E5%85%A5%E6%B3%95-%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id4">添加搜狗输入法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-%E6%90%9C%E7%8B%97%E8%BE%93%E5%85%A5%E6%B3%95-%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.html#id5">参考</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-%E6%9C%89%E9%81%93%E8%AF%8D%E5%85%B8.html">Ubuntu-安装-有道词典</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-%E6%9C%89%E9%81%93%E8%AF%8D%E5%85%B8.html#id1">添加源，并更新</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Linux/Ubuntu-%E5%AE%89%E8%A3%85-%E6%9C%89%E9%81%93%E8%AF%8D%E5%85%B8.html#id2">安装软件包</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/index.html">博客运维</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/%E5%9F%9F%E5%90%8D%E9%87%8D%E5%AE%9A%E5%90%91%E7%9A%84%E5%8F%98%E9%80%9A%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95.html">域名重定向的变通实现方法</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/%E5%9F%9F%E5%90%8D%E9%87%8D%E5%AE%9A%E5%90%91%E7%9A%84%E5%8F%98%E9%80%9A%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95.html#id2">问题</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/%E5%9F%9F%E5%90%8D%E9%87%8D%E5%AE%9A%E5%90%91%E7%9A%84%E5%8F%98%E9%80%9A%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95.html#id3">失败方法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/%E5%9F%9F%E5%90%8D%E9%87%8D%E5%AE%9A%E5%90%91%E7%9A%84%E5%8F%98%E9%80%9A%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95.html#id4">成功方法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/%E5%9F%9F%E5%90%8D%E9%87%8D%E5%AE%9A%E5%90%91%E7%9A%84%E5%8F%98%E9%80%9A%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95.html#id5">原理解释</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/travis-ci%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E4%BC%98%E5%8C%96.html">优化travis-ci配置文件</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/travis-ci%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E4%BC%98%E5%8C%96.html#id1">问题</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/travis-ci%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E4%BC%98%E5%8C%96.html#id2">优化方法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/travis-ci%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E4%BC%98%E5%8C%96.html#id3">结果</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html">hexo教程系列——hexo安装教程</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#node-js">安装node.js</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#npm">设置npm淘宝镜像站</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#github">申请Github账号</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#id1">创建博客仓库</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#git">安装git</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#ssh">配置ssh</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#id2">将公匙添加到github上</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#hexo">安装hexo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#id3">初探hexo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#hexogithub">将hexo博客部署到github上</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#id4">部署hexo</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#id5">hexo命令缩写</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#id6">hexo组合命令</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#id7">常见问题</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#hexo-deploy">hexo deploy没有反应？</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#hexo-s">hexo s 网站打不开？</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#id8">如何换主题？</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.html#id9">参考博客</a><ul>
+<li class="toctree-l4"><a class="reference external" href="https://hexo.io/zh-cn/">hexo官方文档</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://theme-next.iissnan.com/getting-started.html">NexT主题官方文档</a></li>
+<li class="toctree-l4"><a class="reference external" href="https://www.zhihu.com/question/29017171">hexo 下的分类和表签无法显示，怎么解决？</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://www.jianshu.com/p/f4cc5866946b">手把手教从零开始在GitHub上使用Hexo搭建博客教程(一)</a></li>
+<li class="toctree-l4"><a class="reference external" href="https://segmentfault.com/q/1010000004593371">Github上搭建Hexo如何跨电脑写作部署方便？</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://blog.bigruan.com/2015-03-09-Continuous-Integration-Your-Hexo-Blog-With-TravisCI/">Continuous Integration Your Hexo Blog With Travis CI</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://www.jianshu.com/p/1d427e888dda">【Hexo+Github】域名和github绑定的问题</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://www.jianshu.com/p/3cb4c9ff5b58">万网域名+GitHub平台搭建的博客</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B.html">hexo教程系列——hexo配置教程</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B.html#id1">网站的配置文件</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B.html#id2">主题的配置文件</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94hexo%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B.html#id3">参考博客</a><ul>
+<li class="toctree-l4"><a class="reference external" href="http://www.jianshu.com/p/dd9ef08b12df">手把手教从零开始在GitHub上使用Hexo搭建博客教程(二)</a></li>
+<li class="toctree-l4"><a class="reference external" href="https://hexo.io/zh-cn/docs/index.html">hexo官方文档</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://theme-next.iissnan.com/getting-started.html">next主题官方文档</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BD%BF%E7%94%A8Travis%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2hexo.html">hexo教程系列——使用Travis自动部署hexo</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BD%BF%E7%94%A8Travis%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2hexo.html#id1">说明</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BD%BF%E7%94%A8Travis%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2hexo.html#personal-access-token">新建Personal Access Token</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BD%BF%E7%94%A8Travis%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2hexo.html#travis-ci">配置Travis CI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BD%BF%E7%94%A8Travis%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2hexo.html#id2">登录并配置Travis CI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BD%BF%E7%94%A8Travis%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2hexo.html#travis">本地安装Travis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BD%BF%E7%94%A8Travis%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2hexo.html#id3">创建并修改配置文件</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BD%BF%E7%94%A8Travis%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2hexo.html#github">创建仓库，推送到GitHub</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/hexo%E6%95%99%E7%A8%8B%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E4%BD%BF%E7%94%A8Travis%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2hexo.html#id4">参考博客</a><ul>
+<li class="toctree-l4"><a class="reference external" href="https://hexo.io/zh-cn/">hexo官方文档</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://theme-next.iissnan.com/getting-started.html">NexT主题官方文档</a></li>
+<li class="toctree-l4"><a class="reference external" href="https://www.zhihu.com/question/29017171">hexo 下的分类和表签无法显示，怎么解决？</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://www.jianshu.com/p/f4cc5866946b">手把手教从零开始在GitHub上使用Hexo搭建博客教程(一)</a></li>
+<li class="toctree-l4"><a class="reference external" href="https://segmentfault.com/q/1010000004593371">Github上搭建Hexo如何跨电脑写作部署方便？</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://blog.bigruan.com/2015-03-09-Continuous-Integration-Your-Hexo-Blog-With-TravisCI/">Continuous Integration Your Hexo Blog With Travis CI</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://www.jianshu.com/p/1d427e888dda">【Hexo+Github】域名和github绑定的问题</a></li>
+<li class="toctree-l4"><a class="reference external" href="http://www.jianshu.com/p/3cb4c9ff5b58">万网域名+GitHub平台搭建的博客</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/%E6%B5%8B%E8%AF%95MD%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95.html">测试公式</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/%E6%B5%8B%E8%AF%95MD%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95.html#id2">测试代码块</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/%E6%B5%8B%E8%AF%95MD%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95.html#id3">测试链接</a><ul>
+<li class="toctree-l3"><a class="reference external" href="http://www.baidu.com">baidu</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%8D%9A%E5%AE%A2%E8%BF%90%E7%BB%B4/%E6%B5%8B%E8%AF%95MD%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95.html#id4">测试图片</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">张学志の博客</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">深度学习</a> &raquo;</li>
+        
+          <li><a href="index.html">Caffe</a> &raquo;</li>
+        
+      <li>caffe安装系列——综述</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/深度学习/Caffe/caffe安装系列——综述.md.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="caffe">
+<h1>caffe安装系列——综述<a class="headerlink" href="#caffe" title="永久链接至标题">¶</a></h1>
+<section id="id1">
+<h2>说明<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
+<ul class="simple">
+<li><p>网上关于caffe的安装教程非常多，但是关于每一步是否操作成功，出现了什么样的错误又该如何处理没有给出说明。因为大家的操作系统的环境千差万别，按照博客中的教程一步步的安装，最后可能失败——这是很常见的哦。有的教程甚至省略了一些细节部分，让小白更不知道如何判断每一步是否操作成功，如何处理出现的错误。</p></li>
+<li><p>作者花费了很长时间才成功地将caffe装完，期间遇到好多错误，多次重装操作系统。现在将经验写下来，一方面为了和大家分享，讨论；另一方面是为了记录一下下~~~</p></li>
+</ul>
+</section>
+<section id="id2">
+<h2>环境<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<ul class="simple">
+<li><p>操作系统： <em><strong>Ubuntu 14.04</strong></em></p></li>
+<li><p>GCC/G++:<em><strong>4.7.x</strong></em></p></li>
+<li><p>OpenCV: <em><strong>2.4.11和3.0.0</strong></em></p></li>
+<li><p>Matlab :<em><strong>R2014b(a)</strong></em></p></li>
+<li><p>Python:   <em><strong>2.7</strong></em></p></li>
+</ul>
+</section>
+<section id="id3">
+<h2>安装步骤<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<ul class="simple">
+<li><p>其它链接</p></li>
+<li><p><a class="reference external" href="https://blog.xuezhisd.top/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E7%BB%BC%E8%BF%B0.html">综述</a></p></li>
+<li><p><a class="reference external" href="https://blog.xuezhisd.top/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85GCC4.7%E5%92%8CG++4.7%E5%B9%B6%E9%99%8D%E7%BA%A7.html">安装GCC4.7和G++4.7并降级</a></p></li>
+<li><p><a class="reference external" href="https://blog.xuezhisd.top/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85NVIDIA%E6%98%BE%E5%8D%A1%E9%A9%B1%E5%8A%A8.html">安装显卡驱动</a></p></li>
+<li><p><a class="reference external" href="https://blog.xuezhisd.top/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85cuda%E5%92%8Ccudnn.html">安装cuda和cudnn</a></p></li>
+<li><p><a class="reference external" href="https://blog.xuezhisd.top/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85Matlab.html">安装Matlab</a></p></li>
+<li><p><a class="reference external" href="https://blog.xuezhisd.top/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85OpenCV.html">安装OpenCV</a></p></li>
+<li><p><a class="reference external" href="https://blog.xuezhisd.top/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85python%E4%BE%9D%E8%B5%96%E5%8C%85.html">安装Python依赖包</a></p></li>
+<li><p><a class="reference external" href="https://blog.xuezhisd.top/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Caffe/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85caffe.html">安装caffe</a></p></li>
+</ul>
+</section>
+<section id="id4">
+<h2>0.准备工作<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h2>
+<ul class="simple">
+<li><p>安装Ubuntu 14.04（15.04）,最好安装较新版本的Ubuntu。为什么选择Ubuntu呢？一方面，个人使用习惯，感觉Ubuntu安装软件等特别方便，使用特别顺手；另一方面，caffe项目最初貌似在Ubuntu上开发的，原生嘛。</p></li>
+<li><p>安装过程需要下载东东，因此需要<strong>联网</strong>。</p></li>
+</ul>
+</section>
+<section id="gcc4-7g-4-7">
+<h2>1.安装GCC4.7和G++4.7并降级<a class="headerlink" href="#gcc4-7g-4-7" title="永久链接至标题">¶</a></h2>
+<ul class="simple">
+<li><p><em><strong>为什么要先安装GCC和G++，并需要降级呢？</strong></em></p></li>
+<li><p>Ubuntu14.04版本默认的GCC和G++都是4.8。而Matlab默认支持的mex编译器是GCC4.7.x和G++4.7.x。因此需要额外安装GCC4.7和G++4.7并降级。</p></li>
+<li><p><em><strong>为什么需要先安装编译器GCC和G++，而不是先安装显卡驱动和cuda等等呢？</strong></em></p></li>
+<li><p>首先，先安装显卡驱动，后安装GCC并降级的安装顺序过程中，遇到了很多问题。比如，在安装CUDA SAMPLES的过程中，遇到了问题**/usr/bin/ld: cannot find –lGL**，后面通过网上教程，重新连接该库文件，仍然不能通过OpenCV的编译。但是，先安装GCC，再安装显卡驱动，就不会遇到这个问题了。</p></li>
+<li><p>其次，请先看下图。这是在成功地安装完显卡驱动之后，查看加载的显卡的版本信息时返回的结果。注意，包含了GCC4.7.3。说明，显卡安装过程中，会和GCC的版本产生联系。。。。这也就不不难理解为什么在编译Cuda Samples过程中会遇到上面的问题。
+<img alt="这里写图片描述" src="http://img.blog.csdn.net/20150922092210340" /></p></li>
+<li><p>所以，请先安装GCC4.7和G++4.7，然后在执行下面的步骤。</p></li>
+</ul>
+</section>
+<section id="nvidia">
+<h2>2.<a class="reference external" href="http://blog.csdn.net/xuezhisdc/article/details/48650565">安装NVIDIA显卡驱动</a><a class="headerlink" href="#nvidia" title="永久链接至标题">¶</a></h2>
+<ul class="simple">
+<li><p><em><strong>为什么需要安装NVIDIA显卡驱动，Ubuntu没有自带的显卡驱动吗？</strong></em></p>
+<ul>
+<li><p>Ubuntu自带的显卡驱动是开源的Nouveau，据说是一个比较烂的东东。而且，最关键的是cuda不支持Nouveau。如果想使用cuda进行GPU计算，必须安装NVIDIA显卡驱动。</p></li>
+</ul>
+</li>
+<li><p><em><strong>选择哪个版本的显卡驱动呢</strong></em></p>
+<ul>
+<li><p>这个问题需要结合操作系统，显卡和个人需求来讨论。</p></li>
+<li><p>操作系统影响显卡驱动的版本。比如，我在Ubuntu14.04 Server上安装NVIDIA-352显卡驱动，说是由于dkms，安装失败。目前，通过apt-get方式可以安装的最新NVIDIA显卡驱动是NVIDIA-346。</p></li>
+<li><p>显卡嘛，硬件当然要和驱动适应才行</p></li>
+<li><p>个人需求，主要从cuda的角度考虑。比如cuda7.5需要显卡驱动最低版本是nvidia-352；cuda7.0需要显卡驱动最低版本是nvidia-336；cuda6.5需要显卡驱动最低版本是nvidia-33*；其他的记不清楚啦。。。</p></li>
+</ul>
+</li>
+<li><p><em><strong>显卡驱动的安装方式有哪些</strong></em></p>
+<ul>
+<li><p>方法一：去NVIDIA官网下载相应的驱动二进制安装包，然后安装。</p></li>
+<li><p>方法二：通过<code class="docutils literal notranslate"><span class="pre">apt-get</span></code>来安装。</p></li>
+<li><p>区别：apt-get安装方便，但是不能安装最新的显卡驱动，目前ubuntu14.04通过apt-get可以安装nvidia-346显卡。</p></li>
+<li><p>安装过程中注意事项：①需要关闭显示管理器，②二进制安装需要修改文件，并重启。</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="cudacudnn">
+<h2>3.<a class="reference external" href="http://blog.csdn.net/xuezhisdc/article/details/48651003">安装cuda和cudnn</a><a class="headerlink" href="#cudacudnn" title="永久链接至标题">¶</a></h2>
+<ul class="simple">
+<li><p><em><strong>安装cuda的方式有哪些？</strong></em></p>
+<ul>
+<li><p>方法一：官网下载cuda开发包的二进制安装包进行安装。</p></li>
+<li><p>方法二：官网下载cuda开发包的deb文件进行安装。</p></li>
+</ul>
+</li>
+<li><p><em><strong>cuda版本的选择问题？</strong></em></p>
+<ul>
+<li><p>根据个人需求和操作系统来决定，显卡驱动版本。</p></li>
+<li><p>cuda6.5是一个分界点，cuda6.5支持compute_11，compute_12. etc. compute_1X系列架构；从cuda7.0开始，不支持compute_1X系列架构，最低是compute_20架构。</p></li>
+<li><p>cuda对显卡驱动有要求。比如cuda7.5需要显卡驱动最低版本是nvidia-352；cuda7.0需要显卡驱动最低版本是nvidia-336；cuda6.5需要显卡驱动最低版本是nvidia-33*；其他的记不清楚啦。因此，结合自己操作系统可以安装的NVIDIA显卡驱动来决定选择哪个版本的cuda。</p></li>
+</ul>
+</li>
+<li><p><em><strong>为什么安装cudnn？</strong></em></p>
+<ul>
+<li><p>cudnn可以简单的理解为<code class="docutils literal notranslate"><span class="pre">CUDa</span> <span class="pre">cNN</span></code>，即在GPU上做卷积运算。最近几年，深度学习很火，尤其是CNN（卷积神经网络）。通过cudnn，可以极大的提高CNN训练速度。简单的说，实用GPU是为了快，实用cudnn是为了更快。</p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+<section id="id5">
+<h1>安装步骤<a class="headerlink" href="#id5" title="永久链接至标题">¶</a></h1>
+<ul class="simple">
+<li><p>其它链接</p></li>
+<li><p><a class="reference external" href="http://zhangxuezhi.com/2015/09/24/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E7%BB%BC%E8%BF%B0/">综述</a></p></li>
+<li><p><a class="reference external" href="http://zhangxuezhi.com/2015/09/22/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85GCC4.7%E5%92%8CG++4.7%E5%B9%B6%E9%99%8D%E7%BA%A7/">安装GCC4.7和G++4.7并降级</a></p></li>
+<li><p><a class="reference external" href="http://zhangxuezhi.com/2015/09/24/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85NVIDIA%E6%98%BE%E5%8D%A1%E9%A9%B1%E5%8A%A8/">安装显卡驱动</a></p></li>
+<li><p><a class="reference external" href="http://zhangxuezhi.com/2015/09/22/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85cuda%E5%92%8Ccudnn/">安装cuda和cudnn</a></p></li>
+<li><p><a class="reference external" href="http://zhangxuezhi.com/2015/09/23/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85Matlab/">安装Matlab</a></p></li>
+<li><p><a class="reference external" href="http://zhangxuezhi.com/2015/09/24/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85OpenCV/">安装OpenCV</a></p></li>
+<li><p><a class="reference external" href="http://zhangxuezhi.com/2015/09/24/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85python%E4%BE%9D%E8%B5%96%E5%8C%85/">安装Python依赖包</a></p></li>
+<li><p><a class="reference external" href="http://zhangxuezhi.com/2015/10/13/caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85caffe/">安装caffe</a>
+的，深度学习的一大应用对象就是图像和视频。而OpenCV是目前最火的开源计算机视觉库，非常多的项目多用到了OpenCV，当然caffe也依赖OpenCV。所以，需要安装OpenCV，否则无法使用caffe哦。。。</p></li>
+<li><p><em><strong>OpenCV安装简单吗？</strong></em></p>
+<ul>
+<li><p>答案是因人而异。有的人觉得简单，可以自己弄，有的人觉得难，没关系，大神们有写的安装脚本<a class="reference external" href="https://github.com/jayrambhia/Install-OpenCV">点此*下载</a>，运行一下就OK了。</p></li>
+<li><p>但是，使用别人脚本安装的方法，也会遇到一些问题。如果遇到问题，请Google解决。</p></li>
+<li><p>最简单的方式是使用我修改过的脚本，按照顺序执行12345个脚本，基本不需要修改就能成功安装。</p></li>
+<li><p>最后提醒，安装OpenCV是挺麻烦的，请耐心安装，编译不过的话，查看错误Google，解决了再编译，一遍遍的尝试，最后就能解决问题了。</p></li>
+</ul>
+</li>
+<li><p><em><strong>应该安装OpenCV哪个版本呢？</strong></em></p>
+<ul>
+<li><p>OpenCV的版本和cuda的版本最好匹配。这样子安排的目的是为了减少错误出现的概率。比如，我无错误编译成功的组合有【cuda7.0 + opencv3.0】，【cuda6.5+opencv2.11】。</p></li>
+<li><p>应该安装最新的，又不该安装最新的。呵呵，好别扭哦。针对于低版本的cuda，最好安装opencv2.x。而且是opencv2.x中最新的。</p></li>
+<li><p>低版本cuda安装opencv2.x的原因是，opencv的一些文件中涉及一些关于cuda架构的设置，opencv2.x中有支持相应的架构的配置。从这个角度看，cuda6.5是最保险的， 因为它既支持compute_1x，也支持更高的架构。</p></li>
+</ul>
+</li>
+</ul>
+<section id="python">
+<h2>6.<a class="reference external" href="http://blog.csdn.net/xuezhisdc/article/details/48706843">安装Python相关依赖</a><a class="headerlink" href="#python" title="永久链接至标题">¶</a></h2>
+<ul class="simple">
+<li><p><em><strong>为什么要安装python相关依赖？？？</strong></em></p>
+<ul>
+<li><p>首先，python在linux中应用非常的广泛，很多项目都会涉及python，caffe也不例外。</p></li>
+<li><p>其次，caffe提供了python的接口，为了后面使用，也需要这些依赖。</p></li>
+</ul>
+</li>
+<li><p><em><strong>这些依赖都可以通过apt-get安装吗？</strong></em></p>
+<ul>
+<li><p>答案是否定的。</p></li>
+<li><p>首先，google一下<code class="docutils literal notranslate"><span class="pre">apt-get</span> <span class="pre">vs</span> <span class="pre">pip</span></code>，查看两者区别。</p></li>
+<li><p>其次，安装theano的时候，发现apt-get安装的numPy和sciPy无法通过测试，并且造成theano测试失败。使用pip安装成功。参考<a class="reference external" href="http://blog.csdn.net/xuezhisdc/article/details/47065475">《Ubuntu14.04安装Theano详细教程》</a>。</p></li>
+<li><p>最后，在安装caffe的过程中，发现有几个python依赖包必须通过pip安装（即自行编译），否则无法成功地编译caffe。</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id6">
+<h2>7.<a class="reference external" href="http://blog.csdn.net/xuezhisdc/article/details/48707101">安装caffe</a><a class="headerlink" href="#id6" title="永久链接至标题">¶</a></h2>
+<ul class="simple">
+<li><p>再重复一遍，请在上面所有步骤成功执行的前提下，安装caffe，否则编译肯定不会通过的。</p></li>
+<li><p><em><strong>caffe源代码能不能直接拿过来编译呢？</strong></em></p>
+<ul>
+<li><p>不能。至少需要修改一个文件Makefile.config。该文件给caffe编译提供了必要的信息。</p></li>
+<li><p>如果opencv的版本是3.0，还需要修改其他项。</p></li>
+<li><p>其他的请参考安装caffe的教程</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id7">
+<h2>总结<a class="headerlink" href="#id7" title="永久链接至标题">¶</a></h2>
+<ul class="simple">
+<li><p>至此，ubuntu下安装caffe的工作已经结束了。如果你完全按照本教程操作，相信你一定已经成功安装caffe了，并且对caffe有了一定的了解。</p></li>
+<li><p><em><strong>世上无难事只怕有坚持</strong></em>，安装过程虽然很复杂，但是只要坚持，不断的Google解决它，caffe就一定能安装。</p></li>
+<li><p>错误不可怕，它是成功的障碍，同时也为我们成长提供了阶梯——所谓的能力，很大一部分是通过不断解决问题来获取的。</p></li>
+<li><p>下面开始学习如何使用caffe做深度学习的研究喽，祝大家学习愉快。。。</p></li>
+</ul>
+</section>
+<section id="id8">
+<h2>参考<a class="headerlink" href="#id8" title="永久链接至标题">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="http://ouxinyu.github.io/Blogs/20140723001.html">《Caffe + Ubuntu 15.04 + CUDA 7.0 新手安装配置指南》</a>——欧新宇
+这个教程很好，请查看本教程的过程中，结合欧新宇的教程一并查看。</p></li>
+<li><p><a class="reference external" href="https://github.com/BVLC/caffe">《caffe - GitHub主页》</a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="caffe%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85GCC4.7%E5%92%8CG%2B%2B4.7%E5%B9%B6%E9%99%8D%E7%BA%A7.html" class="btn btn-neutral float-right" title="caffe安装系列——安装GCC4.7和G++4.7并降级" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Caffe" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; 版权所有 2019, 张学志.
+
+    </p>
+  </div>
+    
+    
+    
+    利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用了 
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    
+    由 <a href="https://readthedocs.org">Read the Docs</a>开发. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-XXXXXXX-1', 'auto');
+    
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>
